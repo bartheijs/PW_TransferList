@@ -3,14 +3,33 @@
  * WARNING: All changes made to this file will be overwritten
  * @author Mendix Widgets Framework Team
  */
-import { CSSProperties } from "react";
+import { ComponentType, CSSProperties, ReactNode } from "react";
+import { ActionValue, ListValue, ListActionValue, ListExpressionValue, ListWidgetValue } from "mendix";
+
+export type InteractionModeEnum = "click" | "dblclick" | "multiselect" | "dragdrop";
 
 export interface TransferListContainerProps {
     name: string;
     class: string;
     style?: CSSProperties;
     tabIndex?: number;
-    sampleText: string;
+    leftDataSource: ListValue;
+    leftContent?: ListWidgetValue;
+    leftLabel: string;
+    rightDataSource: ListValue;
+    rightContent?: ListWidgetValue;
+    rightLabel: string;
+    interactionMode: InteractionModeEnum;
+    onAdd?: ListActionValue;
+    onRemove?: ListActionValue;
+    onAddAll?: ActionValue;
+    onRemoveAll?: ActionValue;
+    showLeftSearch: boolean;
+    leftSearchAttribute?: ListExpressionValue<string>;
+    showRightSearch: boolean;
+    rightSearchAttribute?: ListExpressionValue<string>;
+    showMoveAll: boolean;
+    panelHeight: string;
 }
 
 export interface TransferListPreviewProps {
@@ -24,5 +43,21 @@ export interface TransferListPreviewProps {
     readOnly: boolean;
     renderMode: "design" | "xray" | "structure";
     translate: (text: string) => string;
-    sampleText: string;
+    leftDataSource: {} | { caption: string } | { type: string } | null;
+    leftContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
+    leftLabel: string;
+    rightDataSource: {} | { caption: string } | { type: string } | null;
+    rightContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
+    rightLabel: string;
+    interactionMode: InteractionModeEnum;
+    onAdd: {} | null;
+    onRemove: {} | null;
+    onAddAll: {} | null;
+    onRemoveAll: {} | null;
+    showLeftSearch: boolean;
+    leftSearchAttribute: string;
+    showRightSearch: boolean;
+    rightSearchAttribute: string;
+    showMoveAll: boolean;
+    panelHeight: string;
 }
