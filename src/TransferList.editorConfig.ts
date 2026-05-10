@@ -1,4 +1,5 @@
 import { TransferListPreviewProps } from "../typings/TransferListProps";
+import { hidePropertiesIn } from "@mendix/pluggable-widgets-tools";
 
 export type Platform = "web" | "desktop";
 
@@ -14,80 +15,80 @@ type Property = {
     key: string;
     caption: string;
     description?: string;
-    objectHeaders?: string[]; // used for customizing object grids
+    objectHeaders?: string[];
     objects?: ObjectProperties[];
     properties?: Properties[];
 };
 
 type ObjectProperties = {
     properties: PropertyGroup[];
-    captions?: string[]; // used for customizing object grids
+    captions?: string[];
 };
 
 export type Problem = {
-    property?: string; // key of the property, at which the problem exists
-    severity?: "error" | "warning" | "deprecation"; // default = "error"
-    message: string; // description of the problem
-    studioMessage?: string; // studio-specific message, defaults to message
-    url?: string; // link with more information about the problem
-    studioUrl?: string; // studio-specific link
+    property?: string;
+    severity?: "error" | "warning" | "deprecation";
+    message: string;
+    studioMessage?: string;
+    url?: string;
+    studioUrl?: string;
 };
 
 type BaseProps = {
     type: "Image" | "Container" | "RowLayout" | "Text" | "DropZone" | "Selectable" | "Datasource";
-    grow?: number; // optionally sets a growth factor if used in a layout (default = 1)
+    grow?: number;
 };
 
 type ImageProps = BaseProps & {
     type: "Image";
-    document?: string; // svg image
-    data?: string; // base64 image
-    property?: object; // widget image property object from Values API
-    width?: number; // sets a fixed maximum width
-    height?: number; // sets a fixed maximum height
+    document?: string;
+    data?: string;
+    property?: object;
+    width?: number;
+    height?: number;
 };
 
 type ContainerProps = BaseProps & {
     type: "Container" | "RowLayout";
-    children: PreviewProps[]; // any other preview element
-    borders?: boolean; // sets borders around the layout to visually group its children
-    borderRadius?: number; // integer. Can be used to create rounded borders
-    backgroundColor?: string; // HTML color, formatted #RRGGBB
-    borderWidth?: number; // sets the border width
-    padding?: number; // integer. adds padding around the container
+    children: PreviewProps[];
+    borders?: boolean;
+    borderRadius?: number;
+    backgroundColor?: string;
+    borderWidth?: number;
+    padding?: number;
 };
 
 type RowLayoutProps = ContainerProps & {
     type: "RowLayout";
-    columnSize?: "fixed" | "grow"; // default is fixed
+    columnSize?: "fixed" | "grow";
 };
 
 type TextProps = BaseProps & {
     type: "Text";
-    content: string; // text that should be shown
-    fontSize?: number; // sets the font size
-    fontColor?: string; // HTML color, formatted #RRGGBB
+    content: string;
+    fontSize?: number;
+    fontColor?: string;
     bold?: boolean;
     italic?: boolean;
 };
 
 type DropZoneProps = BaseProps & {
     type: "DropZone";
-    property: object; // widgets property object from Values API
-    placeholder: string; // text to be shown inside the dropzone when empty
-    showDataSourceHeader?: boolean; // true by default. Toggles whether to show a header containing information about the datasource
+    property: object;
+    placeholder: string;
+    showDataSourceHeader?: boolean;
 };
 
 type SelectableProps = BaseProps & {
     type: "Selectable";
-    object: object; // object property instance from the Value API
-    child: PreviewProps; // any type of preview property to visualize the object instance
+    object: object;
+    child: PreviewProps;
 };
 
 type DatasourceProps = BaseProps & {
     type: "Datasource";
-    property: object | null; // datasource property object from Values API
-    child?: PreviewProps; // any type of preview property component (optional)
+    property: object | null;
+    child?: PreviewProps;
 };
 
 export type PreviewProps =
@@ -99,42 +100,69 @@ export type PreviewProps =
     | SelectableProps
     | DatasourceProps;
 
-export function getProperties(
-    _values: TransferListPreviewProps,
-    defaultProperties: Properties /* , target: Platform*/
-): Properties {
-    // Do the values manipulation here to control the visibility of properties in Studio and Studio Pro conditionally.
-    /* Example
-    if (values.myProperty === "custom") {
-        delete defaultProperties.properties.myOtherProperty;
+export function getProperties(values: TransferListPreviewProps, defaultProperties: Properties): Properties {
+    if (!values.showLeftSearch) {
+        hidePropertiesIn(defaultProperties, values, ["leftSearchAttribute"]);
     }
-    */
+    if (!values.showRightSearch) {
+        hidePropertiesIn(defaultProperties, values, ["rightSearchAttribute"]);
+    }
+    if (!values.showMoveAll) {
+        hidePropertiesIn(defaultProperties, values, ["onAddAll", "onRemoveAll"]);
+    }
     return defaultProperties;
 }
 
-// export function check(_values: TransferListPreviewProps): Problem[] {
-//     const errors: Problem[] = [];
-//     // Add errors to the above array to throw errors in Studio and Studio Pro.
-//     /* Example
-//     if (values.myProperty !== "custom") {
-//         errors.push({
-//             property: `myProperty`,
-//             message: `The value of 'myProperty' is different of 'custom'.`,
-//             url: "https://github.com/myrepo/mywidget"
-//         });
-//     }
-//     */
-//     return errors;
-// }
-
-// export function getPreview(values: TransferListPreviewProps, isDarkMode: boolean, version: number[]): PreviewProps {
-//     // Customize your pluggable widget appearance for Studio Pro.
-//     return {
-//         type: "Container",
-//         children: []
-//     }
-// }
-
-// export function getCustomCaption(values: TransferListPreviewProps, platform: Platform): string {
-//     return "TransferList";
-// }
+export function getPreview(values: TransferListPreviewProps): PreviewProps {
+    return {
+        type: "RowLayout",
+        columnSize: "grow",
+        children: [
+            {
+                type: "Container",
+                borders: true,
+                borderRadius: 4,
+                padding: 8,
+                children: [
+                    {
+                        type: "Text",
+                        content: values.leftLabel || "Available",
+                        bold: true
+                    },
+                    {
+                        type: "DropZone",
+                        property: values.leftContent as object,
+                        placeholder: "Left panel content"
+                    }
+                ]
+            },
+            {
+                type: "Container",
+                grow: 0,
+                padding: 8,
+                children: [
+                    { type: "Text", content: "›" },
+                    { type: "Text", content: "‹" }
+                ]
+            },
+            {
+                type: "Container",
+                borders: true,
+                borderRadius: 4,
+                padding: 8,
+                children: [
+                    {
+                        type: "Text",
+                        content: values.rightLabel || "Selected",
+                        bold: true
+                    },
+                    {
+                        type: "DropZone",
+                        property: values.rightContent as object,
+                        placeholder: "Right panel content"
+                    }
+                ]
+            }
+        ]
+    };
+}
