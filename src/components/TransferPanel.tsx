@@ -1,20 +1,23 @@
-import { createElement, ReactElement, ReactNode } from "react";
+import { DragEvent, ReactElement, ReactNode, createElement, memo, useCallback } from "react";
 import { ObjectItem } from "mendix";
+import classNames from "classnames";
 import { TransferItem } from "./TransferItem";
+import { EMPTY_PLACEHOLDER, INTERACTION_MODES, InteractionMode, PanelSide, SEARCH_PLACEHOLDER } from "../constants";
 
 export interface TransferPanelProps {
     label: string;
     items: ObjectItem[];
     renderItem: (item: ObjectItem) => ReactNode;
     isSelected: (item: ObjectItem) => boolean;
-    interactionMode: string;
-    panelSide: "left" | "right";
+    interactionMode: InteractionMode;
+    panelSide: PanelSide;
     showSearch: boolean;
     searchQuery: string;
     onSearchChange: (query: string) => void;
     onActivate: (item: ObjectItem) => void;
     onToggleSelect: (item: ObjectItem) => void;
     onDragStart: (item: ObjectItem) => void;
+    onDragEnd: () => void;
     onDrop: () => void;
     onDragOver: () => void;
     onDragLeave: () => void;
@@ -22,90 +25,109 @@ export interface TransferPanelProps {
     panelHeight: string;
 }
 
-export function TransferPanel({
-    label,
-    items,
-    renderItem,
-    isSelected,
-    interactionMode,
-    panelSide,
-    showSearch,
-    searchQuery,
-    onSearchChange,
-    onActivate,
-    onToggleSelect,
-    onDragStart,
-    onDrop,
-    onDragOver,
-    onDragLeave,
-    isDragOver,
-    panelHeight
-}: TransferPanelProps): ReactElement {
-    const panelBodyClass = ["transfer-list__panel-body", isDragOver ? "transfer-list__panel-body--drag-over" : ""]
-        .filter(Boolean)
-        .join(" ");
+/**
+ * One side of the TransferList — header with label and item count, an optional
+ * search input, and a scrollable item list. Memoized to avoid re-rendering when
+ * only the opposite panel's state changes in the parent.
+ */
+export const TransferPanel = memo(
+    ({
+        label,
+        items,
+        renderItem,
+        isSelected,
+        interactionMode,
+        panelSide,
+        showSearch,
+        searchQuery,
+        onSearchChange,
+        onActivate,
+        onToggleSelect,
+        onDragStart,
+        onDragEnd,
+        onDrop,
+        onDragOver,
+        onDragLeave,
+        isDragOver,
+        panelHeight
+    }: TransferPanelProps): ReactElement => {
+        const isDragDrop = interactionMode === INTERACTION_MODES.DRAG_DROP;
+        const isMultiselect = interactionMode === INTERACTION_MODES.MULTISELECT;
 
-    return (
-        <div className={`transfer-list__panel transfer-list__panel--${panelSide}`} role="listbox" aria-label={label}>
-            <div className="transfer-list__panel-header">
-                <span className="transfer-list__panel-label">{label}</span>
-                <span className="transfer-list__panel-count" aria-live="polite">
-                    {items.length}
-                </span>
-            </div>
-            {showSearch && (
-                <div className="transfer-list__search-wrapper">
-                    <input
-                        type="search"
-                        className="form-control transfer-list__search"
-                        placeholder="Search…"
-                        value={searchQuery}
-                        onChange={e => onSearchChange(e.target.value)}
-                        aria-label={`Search ${label}`}
-                    />
-                </div>
-            )}
+        const handleBodyDragOver = useCallback(
+            (e: DragEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                onDragOver();
+            },
+            [onDragOver]
+        );
+
+        const handleBodyDrop = useCallback(
+            (e: DragEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                onDrop();
+            },
+            [onDrop]
+        );
+
+        return (
             <div
-                className={panelBodyClass}
-                style={{ height: panelHeight }}
-                onDragOver={
-                    interactionMode === "dragdrop"
-                        ? e => {
-                              e.preventDefault();
-                              onDragOver();
-                          }
-                        : undefined
-                }
-                onDragLeave={interactionMode === "dragdrop" ? onDragLeave : undefined}
-                onDrop={
-                    interactionMode === "dragdrop"
-                        ? e => {
-                              e.preventDefault();
-                              onDrop();
-                          }
-                        : undefined
-                }
+                className={classNames("transfer-list__panel", `transfer-list__panel--${panelSide}`)}
+                role="listbox"
+                aria-label={label}
+                aria-multiselectable={isMultiselect || undefined}
             >
-                {items.map(item => (
-                    <TransferItem
-                        key={item.id}
-                        item={item}
-                        isSelected={isSelected(item)}
-                        interactionMode={interactionMode}
-                        onActivate={onActivate}
-                        onToggleSelect={onToggleSelect}
-                        onDragStart={onDragStart}
-                        onDrop={() => onDrop()}
-                    >
-                        {renderItem(item)}
-                    </TransferItem>
-                ))}
-                {items.length === 0 && (
-                    <div className="transfer-list__empty" aria-live="polite">
-                        No items
+                <div className="transfer-list__panel-header">
+                    <span className="transfer-list__panel-label">{label}</span>
+                    <span className="transfer-list__panel-count" aria-live="polite">
+                        {items.length}
+                    </span>
+                </div>
+                {showSearch && (
+                    <div className="transfer-list__search-wrapper">
+                        <input
+                            type="search"
+                            className="form-control transfer-list__search"
+                            placeholder={SEARCH_PLACEHOLDER}
+                            value={searchQuery}
+                            onChange={e => onSearchChange(e.target.value)}
+                            aria-label={`Search ${label}`}
+                        />
                     </div>
                 )}
+                <div
+                    className={classNames("transfer-list__panel-body", {
+                        "transfer-list__panel-body--drag-over": isDragOver
+                    })}
+                    style={{ height: panelHeight }}
+                    onDragOver={isDragDrop ? handleBodyDragOver : undefined}
+                    onDragLeave={isDragDrop ? onDragLeave : undefined}
+                    onDrop={isDragDrop ? handleBodyDrop : undefined}
+                >
+                    {items.length === 0 ? (
+                        <div className="transfer-list__empty" aria-live="polite">
+                            {EMPTY_PLACEHOLDER}
+                        </div>
+                    ) : (
+                        items.map(item => (
+                            <TransferItem
+                                key={item.id}
+                                item={item}
+                                isSelected={isSelected(item)}
+                                interactionMode={interactionMode}
+                                onActivate={onActivate}
+                                onToggleSelect={onToggleSelect}
+                                onDragStart={onDragStart}
+                                onDragEnd={onDragEnd}
+                                onDrop={onDrop}
+                            >
+                                {renderItem(item)}
+                            </TransferItem>
+                        ))
+                    )}
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
+);
+TransferPanel.displayName = "TransferPanel";

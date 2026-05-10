@@ -1,7 +1,31 @@
-import { createElement, ReactElement } from "react";
+import { ReactElement, createElement, memo } from "react";
+import { INTERACTION_MODES, InteractionMode } from "../constants";
+
+interface ControlButtonProps {
+    icon: string;
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+}
+
+/** A single arrow button in the controls column. */
+function ControlButton({ icon, label, onClick, disabled }: ControlButtonProps): ReactElement {
+    return (
+        <button
+            className="btn btn-default transfer-list__btn"
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            aria-label={label}
+            title={label}
+        >
+            {icon}
+        </button>
+    );
+}
 
 export interface TransferControlsProps {
-    interactionMode: string;
+    interactionMode: InteractionMode;
     showMoveAll: boolean;
     canMoveRight: boolean;
     canMoveLeft: boolean;
@@ -11,66 +35,49 @@ export interface TransferControlsProps {
     onMoveAllLeft: () => void;
 }
 
-export function TransferControls({
-    interactionMode,
-    showMoveAll,
-    canMoveRight,
-    canMoveLeft,
-    onMoveRight,
-    onMoveLeft,
-    onMoveAllRight,
-    onMoveAllLeft
-}: TransferControlsProps): ReactElement {
-    const isMultiselect = interactionMode === "multiselect";
+/**
+ * Middle column rendering the four possible movement buttons:
+ * - `»` / `«` (move-all) when `showMoveAll` is on
+ * - `›` / `‹` (move-selected) when in multiselect mode
+ *
+ * Memoized so it only re-renders when its own props change (selection size changes,
+ * action references change, or the parent's mode toggles).
+ */
+export const TransferControls = memo(
+    ({
+        interactionMode,
+        showMoveAll,
+        canMoveRight,
+        canMoveLeft,
+        onMoveRight,
+        onMoveLeft,
+        onMoveAllRight,
+        onMoveAllLeft
+    }: TransferControlsProps): ReactElement => {
+        const isMultiselect = interactionMode === INTERACTION_MODES.MULTISELECT;
 
-    return (
-        <div className="transfer-list__controls" role="group" aria-label="Transfer controls">
-            {showMoveAll && (
-                <button
-                    className="btn btn-default transfer-list__btn"
-                    type="button"
-                    onClick={onMoveAllRight}
-                    aria-label="Move all to right"
-                    title="Move all to right"
-                >
-                    {"»"}
-                </button>
-            )}
-            {isMultiselect && (
-                <button
-                    className="btn btn-default transfer-list__btn"
-                    type="button"
-                    onClick={onMoveRight}
-                    disabled={!canMoveRight}
-                    aria-label="Move selected to right"
-                    title="Move selected to right"
-                >
-                    {">"}
-                </button>
-            )}
-            {isMultiselect && (
-                <button
-                    className="btn btn-default transfer-list__btn"
-                    type="button"
-                    onClick={onMoveLeft}
-                    disabled={!canMoveLeft}
-                    aria-label="Move selected to left"
-                    title="Move selected to left"
-                >
-                    {"<"}
-                </button>
-            )}
-            {showMoveAll && (
-                <button
-                    className="btn btn-default transfer-list__btn"
-                    type="button"
-                    onClick={onMoveAllLeft}
-                    aria-label="Move all to left"
-                    title="Move all to left"
-                >
-                    {"«"}
-                </button>
-            )}
-        </div>
-    );
-}
+        return (
+            <div className="transfer-list__controls" role="group" aria-label="Transfer controls">
+                {showMoveAll && <ControlButton icon="»" label="Move all to right" onClick={onMoveAllRight} />}
+                {isMultiselect && (
+                    <ControlButton
+                        icon="›"
+                        label="Move selected to right"
+                        onClick={onMoveRight}
+                        disabled={!canMoveRight}
+                    />
+                )}
+                {isMultiselect && (
+                    <ControlButton
+                        icon="‹"
+                        label="Move selected to left"
+                        onClick={onMoveLeft}
+                        disabled={!canMoveLeft}
+                    />
+                )}
+                {showMoveAll && <ControlButton icon="«" label="Move all to left" onClick={onMoveAllLeft} />}
+            </div>
+        );
+    }
+);
+TransferControls.displayName = "TransferControls";

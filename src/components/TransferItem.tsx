@@ -1,17 +1,31 @@
-import { createElement, DragEvent, ReactElement, ReactNode } from "react";
+import { DragEvent, KeyboardEvent, ReactElement, ReactNode, createElement } from "react";
 import { ObjectItem } from "mendix";
+import classNames from "classnames";
+import { INTERACTION_MODES, InteractionMode } from "../constants";
 
 export interface TransferItemProps {
     item: ObjectItem;
     children: ReactNode;
     isSelected: boolean;
-    interactionMode: string;
+    interactionMode: InteractionMode;
     onActivate: (item: ObjectItem) => void;
     onToggleSelect: (item: ObjectItem) => void;
     onDragStart: (item: ObjectItem) => void;
-    onDrop: (item: ObjectItem) => void;
+    onDragEnd: () => void;
+    onDrop: () => void;
 }
 
+/**
+ * A single row in a TransferList panel.
+ *
+ * Behaviour depends on `interactionMode`:
+ * - **click**: single click activates the item (triggers add/remove).
+ * - **dblclick**: double click activates the item.
+ * - **multiselect**: a checkbox is rendered; clicks anywhere on the row toggle selection.
+ * - **dragdrop**: the row is draggable; dropping on another row in the opposite panel triggers the action.
+ *
+ * Keyboard activation (Enter / Space) mirrors mouse activation.
+ */
 export function TransferItem({
     item,
     children,
@@ -20,17 +34,19 @@ export function TransferItem({
     onActivate,
     onToggleSelect,
     onDragStart,
+    onDragEnd,
     onDrop
 }: TransferItemProps): ReactElement {
-    const isDragDrop = interactionMode === "dragdrop";
-    const isMultiselect = interactionMode === "multiselect";
+    const isDragDrop = interactionMode === INTERACTION_MODES.DRAG_DROP;
+    const isMultiselect = interactionMode === INTERACTION_MODES.MULTISELECT;
 
-    const className = ["transfer-list__item", isSelected ? "transfer-list__item--selected" : ""]
-        .filter(Boolean)
-        .join(" ");
+    const className = classNames("transfer-list__item", {
+        "transfer-list__item--selected": isSelected
+    });
 
-    const handleClick = (): void => {
-        if (interactionMode === "click") {
+    /** Triggers activation or selection toggle based on the current interaction mode. */
+    const activateOrToggle = (): void => {
+        if (interactionMode === INTERACTION_MODES.CLICK) {
             onActivate(item);
         } else if (isMultiselect) {
             onToggleSelect(item);
@@ -38,9 +54,21 @@ export function TransferItem({
     };
 
     const handleDoubleClick = (): void => {
-        if (interactionMode === "dblclick") {
+        if (interactionMode === INTERACTION_MODES.DOUBLE_CLICK) {
             onActivate(item);
         }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
+        if (e.key !== "Enter" && e.key !== " ") {
+            return;
+        }
+        e.preventDefault();
+        if (interactionMode === INTERACTION_MODES.DOUBLE_CLICK) {
+            onActivate(item);
+            return;
+        }
+        activateOrToggle();
     };
 
     const handleDragStart = (e: DragEvent<HTMLDivElement>): void => {
@@ -54,32 +82,27 @@ export function TransferItem({
     };
 
     const handleDrop = (e: DragEvent<HTMLDivElement>): void => {
+        // Stop propagation so the panel-body drop handler does not fire again for the same event.
         e.preventDefault();
-        onDrop(item);
+        e.stopPropagation();
+        onDrop();
     };
 
     return (
         <div
             className={className}
             role="option"
-            aria-selected={isSelected}
+            // aria-selected only carries semantic weight when the listbox is multi-selectable.
+            aria-selected={isMultiselect ? isSelected : undefined}
             tabIndex={0}
             draggable={isDragDrop}
-            onClick={handleClick}
+            onClick={activateOrToggle}
             onDoubleClick={handleDoubleClick}
+            onKeyDown={handleKeyDown}
             onDragStart={isDragDrop ? handleDragStart : undefined}
             onDragOver={isDragDrop ? handleDragOver : undefined}
+            onDragEnd={isDragDrop ? onDragEnd : undefined}
             onDrop={isDragDrop ? handleDrop : undefined}
-            onKeyDown={e => {
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    if (interactionMode === "click" || interactionMode === "dblclick") {
-                        onActivate(item);
-                    } else if (isMultiselect) {
-                        onToggleSelect(item);
-                    }
-                }
-            }}
         >
             {isMultiselect && (
                 <input
