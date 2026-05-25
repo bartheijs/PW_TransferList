@@ -1,8 +1,11 @@
 /** Prefix passed as the first argument to every `console.warn` / `console.error` call. */
 export const LOG_PREFIX = "[TransferList]";
 
-/** Fallback height for the scrollable panel body when mode is "fixed" and no value is set. */
-export const DEFAULT_PANEL_HEIGHT = "300px";
+/** Default numeric height for the panel body (matches XML defaultValue). */
+export const DEFAULT_PANEL_HEIGHT = 300;
+
+/** Default CSS unit for the panel body height (matches XML defaultValue). */
+export const DEFAULT_PANEL_HEIGHT_UNIT = "px";
 
 /**
  * Keys for the `panelHeightMode` enumeration property.

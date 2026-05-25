@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { TransferListContainerProps } from "../typings/TransferListProps";
 import { TransferPanel } from "./components/TransferPanel";
 import { TransferControls } from "./components/TransferControls";
-import { DEFAULT_PANEL_HEIGHT, PANEL_HEIGHT_MODES, PanelSide } from "./constants";
+import { DEFAULT_PANEL_HEIGHT, DEFAULT_PANEL_HEIGHT_UNIT, PANEL_HEIGHT_MODES, PanelSide } from "./constants";
 import { executeListItemAction } from "./utils/executeActions";
 import { filterItemsBySearch } from "./utils/filterItems";
 import "./ui/TransferList.css";
@@ -38,6 +38,7 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         showMoveAll,
         panelHeightMode,
         panelHeight,
+        panelHeightUnit,
         class: className,
         style,
         tabIndex
@@ -193,7 +194,11 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
     // to fill the available space. In fixed mode a fallback ensures a usable
     // height even when the property is left empty in Studio Pro.
     const isFill = panelHeightMode === PANEL_HEIGHT_MODES.FILL;
-    const resolvedHeight = isFill ? undefined : panelHeight || DEFAULT_PANEL_HEIGHT;
+    // Combine the numeric value and unit into a valid CSS length string.
+    // Defaults guard against Studio Pro delivering 0 or an absent unit.
+    const resolvedHeight = isFill
+        ? undefined
+        : `${panelHeight || DEFAULT_PANEL_HEIGHT}${panelHeightUnit || DEFAULT_PANEL_HEIGHT_UNIT}`;
 
     return (
         <div

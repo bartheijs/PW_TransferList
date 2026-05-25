@@ -40,9 +40,18 @@
                     <enumerationValue key="fill">Fill parent container</enumerationValue>
                 </enumerationValues>
             </property>
-            <property key="panelHeight" type="string" required="false" defaultValue="300px">
+            <property key="panelHeight" type="integer" defaultValue="300">
                 <caption>Panel height</caption>
-                <description>Height of the scrollable panel body (fixed mode only), e.g. 300px or 20rem</description>
+                <description>Numeric height value (fixed mode only)</description>
+            </property>
+            <property key="panelHeightUnit" type="enumeration" defaultValue="px">
+                <caption>Panel height unit</caption>
+                <description>CSS unit for the panel height (fixed mode only)</description>
+                <enumerationValues>
+                    <enumerationValue key="px">px</enumerationValue>
+                    <enumerationValue key="rem">rem</enumerationValue>
+                    <enumerationValue key="vh">vh</enumerationValue>
+                </enumerationValues>
             </property>
         </propertyGroup>
         <propertyGroup caption="Interaction">

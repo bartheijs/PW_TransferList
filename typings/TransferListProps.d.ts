@@ -8,6 +8,8 @@ import { ListValue, ListActionValue, ListExpressionValue, ListWidgetValue } from
 
 export type PanelHeightModeEnum = "fixed" | "fill";
 
+export type PanelHeightUnitEnum = "px" | "rem" | "vh";
+
 export type InteractionModeEnum = "click" | "dblclick" | "multiselect" | "dragdrop";
 
 export interface TransferListContainerProps {
@@ -22,7 +24,8 @@ export interface TransferListContainerProps {
     rightContent?: ListWidgetValue;
     rightLabel?: ReactNode;
     panelHeightMode: PanelHeightModeEnum;
-    panelHeight: string;
+    panelHeight: number;
+    panelHeightUnit: PanelHeightUnitEnum;
     interactionMode: InteractionModeEnum;
     showMoveAll: boolean;
     onAdd?: ListActionValue;
@@ -51,7 +54,8 @@ export interface TransferListPreviewProps {
     rightContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     rightLabel: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     panelHeightMode: PanelHeightModeEnum;
-    panelHeight: string;
+    panelHeight: number | null;
+    panelHeightUnit: PanelHeightUnitEnum;
     interactionMode: InteractionModeEnum;
     showMoveAll: boolean;
     onAdd: {} | null;

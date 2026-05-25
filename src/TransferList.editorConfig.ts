@@ -108,7 +108,7 @@ export function getProperties(values: TransferListPreviewProps, defaultPropertie
         hidePropertiesIn(defaultProperties, values, ["rightSearchAttribute"]);
     }
     if (values.panelHeightMode === "fill") {
-        hidePropertiesIn(defaultProperties, values, ["panelHeight"]);
+        hidePropertiesIn(defaultProperties, values, ["panelHeight", "panelHeightUnit"]);
     }
     return defaultProperties;
 }
