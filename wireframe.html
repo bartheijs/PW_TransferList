@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TransferList Widget — High-Fidelity Wireframe</title>
+  <style>
+    /* ─── Page shell ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      font-size: 14px;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto 28px;
+    }
+
+    /* ─── Tab bar (interaction modes) ───────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      background: #e5e7eb;
+      padding: 4px;
+      border-radius: 10px;
+      width: fit-content;
+      margin: 20px 0 28px;
+    }
+    .tab-btn {
+      padding: 7px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { background: #d1d5db; color: #111827; }
+    .tab-btn.active { background: #ffffff; color: #1a1a2e; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+
+    /* ─── Section label ──────────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    /* ─── Mendix-style page canvas ───────────────────────────────────── */
+    .canvas {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.06);
+    }
+
+    .canvas-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f3f4f6;
+      margin-bottom: 28px;
+    }
+    .canvas-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .canvas-dot.red   { background:#ff5f57; }
+    .canvas-dot.yellow{ background:#febc2e; }
+    .canvas-dot.green { background:#28c840; }
+    .canvas-title {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-left: 4px;
+    }
+
+    /* ─── Form field above widget ────────────────────────────────────── */
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      flex: 1;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="text"],
+    .form-group select {
+      width: 100%;
+      height: 34px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: #374151;
+      background: #fff;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #264ae5;
+      box-shadow: 0 0 0 3px rgba(38,74,229,.12);
+    }
+
+    /* ─── The widget itself ──────────────────────────────────────────── */
+    .widget-wrapper {
+      /* matches widget's CSS container */
+    }
+
+    .transfer-list {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    /* panel */
+    .tl-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #d7d7d7;
+      border-radius: 4px;
+      background: #ffffff;
+      min-width: 0;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .tl-panel.drag-over {
+      background: #e8f0fe;
+      border: 2px dashed #264ae5;
+      box-shadow: none;
+    }
+
+    .tl-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #f5f5f5;
+      border-bottom: 1px solid #d7d7d7;
+      border-radius: 3px 3px 0 0;
+      flex-shrink: 0;
+    }
+    .tl-panel-label {
+      font-weight: 600;
+      font-size: 0.875em;
+      color: #1a1a2e;
+    }
+    .tl-panel-count {
+      font-size: 0.8em;
+      color: #737373;
+      background: #e5e7eb;
+      border-radius: 10px;
+      padding: 1px 8px;
+    }
+
+    /* search bar */
+    .tl-search {
+      padding: 6px 8px;
+      border-bottom: 1px solid #ebebeb;
+      flex-shrink: 0;
+    }
+    .tl-search input {
+      width: 100%;
+      height: 30px;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
+      padding: 0 8px 0 28px;
+      font-size: 13px;
+      color: #374151;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E") no-repeat 8px center;
+      outline: none;
+    }
+    .tl-search input:focus {
+      border-color: #264ae5;
+      box-shadow: 0 0 0 2px rgba(38,74,229,.12);
+    }
+
+    /* body / item list */
+    .tl-body {
+      overflow-y: auto;
+      height: 300px;
+      flex: 1;
+    }
+
+    /* items */
+    .tl-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-bottom: 1px solid #ebebeb;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s ease;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-item:hover { background: #f0f0f0; }
+    .tl-item.selected { background: #dce6fb; }
+    .tl-item.selected:hover { background: #c8d9f8; }
+    .tl-item.focused { outline: 2px solid #264ae5; outline-offset: -2px; }
+    .tl-item.draggable { cursor: grab; }
+    .tl-item.dragging { cursor: grabbing; opacity: 0.5; }
+
+    /* checkbox (multiselect mode) */
+    .tl-checkbox {
+      width: 15px;
+      height: 15px;
+      border: 1.5px solid #9ca3af;
+      border-radius: 3px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      transition: all 0.1s;
+    }
+    .tl-item.selected .tl-checkbox {
+      background: #264ae5;
+      border-color: #264ae5;
+    }
+    .tl-item.selected .tl-checkbox::after {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 5px;
+      border-left: 1.5px solid #fff;
+      border-bottom: 1.5px solid #fff;
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    /* avatar/icon in item */
+    .tl-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .tl-item-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .tl-item-name {
+      font-weight: 500;
+      color: #111827;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tl-item-meta {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 1px;
+    }
+
+    .tl-drag-handle {
+      color: #d1d5db;
+      font-size: 16px;
+      flex-shrink: 0;
+      cursor: grab;
+    }
+
+    /* empty state */
+    .tl-empty {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #9e9e9e;
+      font-size: 13px;
+      gap: 8px;
+      padding: 24px;
+    }
+    .tl-empty-icon {
+      font-size: 28px;
+      opacity: 0.35;
+    }
+
+    /* ─── Controls column ────────────────────────────────────────────── */
+    .tl-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 8px 2px;
+    }
+
+    .tl-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 13px;
+      color: #374151;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+    .tl-btn:hover { background: #f3f4f6; border-color: #9ca3af; }
+    .tl-btn:active { background: #e5e7eb; transform: scale(0.96); }
+    .tl-btn:disabled,
+    .tl-btn.disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
+    .tl-btn.primary {
+      background: #264ae5;
+      border-color: #264ae5;
+      color: #fff;
+    }
+    .tl-btn.primary:hover { background: #1d3ab8; }
+
+    .tl-btn-divider {
+      width: 24px;
+      height: 1px;
+      background: #e5e7eb;
+      margin: 2px 0;
+    }
+
+    /* ─── Annotation callouts ─────────────────────────────────────────── */
+    .annotations {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .annotation-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    .annotation-card h3 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .annotation-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .annotation-card ul li {
+      font-size: 12px;
+      color: #374151;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .annotation-card ul li::before {
+      content: "•";
+      color: #264ae5;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ─── Mode descriptions ──────────────────────────────────────────── */
+    .mode-description {
+      max-width: 1100px;
+      margin: 0 auto 20px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #1d4ed8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mode-description .icon { font-size: 16px; }
+
+    /* ─── State palette ──────────────────────────────────────────────── */
+    .state-palette {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .state-swatch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #374151;
+    }
+    .swatch-box {
+      width: 28px;
+      height: 18px;
+      border-radius: 3px;
+    }
+
+    /* ─── Panel heights toggle ───────────────────────────────────────── */
+    .controls-row {
+      max-width: 1100px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .toggle {
+      appearance: none;
+      width: 34px;
+      height: 18px;
+      background: #d1d5db;
+      border-radius: 9px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s;
+    }
+    .toggle:checked { background: #264ae5; }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .toggle:checked::after { left: 18px; }
+
+    /* ─── Scrollbar styling ──────────────────────────────────────────── */
+    .tl-body::-webkit-scrollbar { width: 6px; }
+    .tl-body::-webkit-scrollbar-track { background: transparent; }
+    .tl-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+    /* ─── Footer / legend ───────────────────────────────────────────── */
+    .footer {
+      max-width: 1100px;
+      margin: 36px auto 0;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .form-row { flex-direction: column; }
+      .transfer-list { flex-direction: column; }
+      .tl-controls { flex-direction: row; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     PAGE HEADER
+═════════════════════════════════════════════════════════════════════ -->
+<div class="page-header">
+  <h1>TransferList Widget — High-Fidelity Wireframe</h1>
+  <p class="subtitle">Mendix Pluggable Widget · Web · conclusion low code company · v1.x</p>
+
+  <div class="tab-bar" id="modeTabBar">
+    <button class="tab-btn active" data-mode="click" onclick="setMode('click', this)">Click</button>
+    <button class="tab-btn" data-mode="dblclick" onclick="setMode('dblclick', this)">Double Click</button>
+    <button class="tab-btn" data-mode="multiselect" onclick="setMode('multiselect', this)">Multi Select</button>
+    <button class="tab-btn" data-mode="dragdrop" onclick="setMode('dragdrop', this)">Drag &amp; Drop</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     MODE DESCRIPTION BANNER
+═════════════════════════════════════════════════════════════════════ -->
+<div class="mode-description" id="modeDesc">
+  <span class="icon">👆</span>
+  <span id="modeDescText"><strong>Click mode:</strong> Single-click an item to immediately move it to the opposite panel. The arrow buttons in the centre are hidden in this mode.</span>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     CONTROLS ROW (toggles)
+═════════════════════════════════════════════════════════════════════ -->
+<div class="controls-row">
+  <div class="toggle-group">
+    <input type="checkbox" class="toggle" id="toggleSearch" onchange="toggleSearch()">
+    <label for="toggleSearch">Show Search Bars</label>
+  </div>
+  <div class="toggle-group">
+    <input type="checkbox" class="toggle" id="toggleMoveAll" onchange="toggleMoveAll()">
+    <label for="toggleMoveAll">Show Move-All Buttons</label>
+  </div>
+  <div class="toggle-group">
+    <input type="checkbox" class="toggle" id="toggleEmpty" onchange="toggleEmpty()">
+    <label for="toggleEmpty">Show Empty Right Panel</label>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     MENDIX-STYLE CANVAS
+═════════════════════════════════════════════════════════════════════ -->
+<div class="canvas" id="mainCanvas">
+
+  <!-- Window chrome -->
+  <div class="canvas-header">
+    <span class="canvas-dot red"></span>
+    <span class="canvas-dot yellow"></span>
+    <span class="canvas-dot green"></span>
+    <span class="canvas-title">Mendix · Employee Role Assignment · Page 1</span>
+  </div>
+
+  <!-- Surrounding form context -->
+  <div class="form-row">
+    <div class="form-group">
+      <label>Department</label>
+      <select><option>Engineering</option><option>Marketing</option></select>
+    </div>
+    <div class="form-group">
+      <label>Project</label>
+      <input type="text" value="Q3 Platform Migration" />
+    </div>
+    <div class="form-group">
+      <label>Manager</label>
+      <input type="text" value="Sarah van den Berg" />
+    </div>
+  </div>
+
+  <!-- ── THE WIDGET ─────────────────────────────────────────────────── -->
+  <div class="section-label">TransferList Widget</div>
+  <div class="widget-wrapper">
+    <div class="transfer-list" id="transferList">
+
+      <!-- ── LEFT PANEL ── -->
+      <div class="tl-panel" id="leftPanel">
+        <div class="tl-panel-header">
+          <span class="tl-panel-label">Available</span>
+          <span class="tl-panel-count" id="leftCount">7</span>
+        </div>
+
+        <!-- search (hidden by default) -->
+        <div class="tl-search" id="leftSearch" style="display:none;">
+          <input type="text" placeholder="Search available…" oninput="filterItems('left', this.value)" />
+        </div>
+
+        <!-- items -->
+        <div class="tl-body" id="leftBody">
+          <!-- items rendered by JS -->
+        </div>
+      </div>
+
+      <!-- ── CONTROLS ── -->
+      <div class="tl-controls" id="tlControls">
+        <!-- rendered by JS based on mode -->
+      </div>
+
+      <!-- ── RIGHT PANEL ── -->
+      <div class="tl-panel" id="rightPanel">
+        <div class="tl-panel-header">
+          <span class="tl-panel-label">Selected</span>
+          <span class="tl-panel-count" id="rightCount">3</span>
+        </div>
+
+        <!-- search (hidden by default) -->
+        <div class="tl-search" id="rightSearch" style="display:none;">
+          <input type="text" placeholder="Search selected…" oninput="filterItems('right', this.value)" />
+        </div>
+
+        <div class="tl-body" id="rightBody">
+        </div>
+      </div>
+
+    </div><!-- /transfer-list -->
+  </div><!-- /widget-wrapper -->
+
+  <!-- Surrounding form (below) -->
+  <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+    <button style="padding:8px 20px; border:1px solid #d1d5db; border-radius:6px; background:#fff; font-size:13px; cursor:pointer; color:#374151;">Cancel</button>
+    <button style="padding:8px 20px; border:none; border-radius:6px; background:#264ae5; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">Save</button>
+  </div>
+
+</div><!-- /canvas -->
+
+<!-- ════════════════════════════════════════════════════════════════════
+     VISUAL STATE PALETTE
+═════════════════════════════════════════════════════════════════════ -->
+<div style="max-width:1100px; margin:28px auto 0;">
+  <div class="section-label">Visual States</div>
+  <div class="state-palette">
+    <div class="state-swatch"><div class="swatch-box" style="background:#ffffff; border:1px solid #d7d7d7;"></div> Default</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#f0f0f0; border:1px solid #d7d7d7;"></div> Hover</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#dce6fb; border:1px solid #d7d7d7;"></div> Selected</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#c8d9f8; border:1px solid #d7d7d7;"></div> Selected + Hover</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#ffffff; outline:2px solid #264ae5;"></div> Focused</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#e8f0fe; border:2px dashed #264ae5;"></div> Drag-Over Panel</div>
+    <div class="state-swatch"><div class="swatch-box" style="background:#f5f5f5; border:1px solid #d7d7d7;"></div> Panel Header</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     ANNOTATION CARDS
+═════════════════════════════════════════════════════════════════════ -->
+<div class="annotations">
+
+  <div class="annotation-card">
+    <h3>Panel Anatomy</h3>
+    <ul>
+      <li>Header: label + item count badge</li>
+      <li>Optional search bar (toggleable)</li>
+      <li>Scrollable body (default 300 px)</li>
+      <li>Empty-state message when no items</li>
+      <li>Border 1px #d7d7d7 · radius 4px</li>
+    </ul>
+  </div>
+
+  <div class="annotation-card">
+    <h3>Item Template</h3>
+    <ul>
+      <li>Full custom widget template slot</li>
+      <li>Avatar / icon (developer-defined)</li>
+      <li>Primary label + secondary meta text</li>
+      <li>Checkbox appears in multi-select mode</li>
+      <li>Drag handle appears in drag-drop mode</li>
+    </ul>
+  </div>
+
+  <div class="annotation-card">
+    <h3>Interaction Modes</h3>
+    <ul>
+      <li><strong>Click:</strong> single click moves item</li>
+      <li><strong>Double click:</strong> dbl-click moves item</li>
+      <li><strong>Multi-select:</strong> checkboxes + arrow btn</li>
+      <li><strong>Drag &amp; Drop:</strong> drag to opposite panel</li>
+    </ul>
+  </div>
+
+  <div class="annotation-card">
+    <h3>Persistence</h3>
+    <ul>
+      <li>Widget does NOT manage state itself</li>
+      <li>onAdd / onRemove actions trigger nanoflows</li>
+      <li>onAddAll / onRemoveAll for bulk moves</li>
+      <li>Commit + refresh datasources in nanoflow</li>
+    </ul>
+  </div>
+
+  <div class="annotation-card">
+    <h3>Accessibility</h3>
+    <ul>
+      <li>ARIA roles on panels and items</li>
+      <li>Keyboard navigation (Tab, Enter, Space)</li>
+      <li>Focus ring: 2px solid #264ae5</li>
+      <li>Screen reader-compatible labels</li>
+    </ul>
+  </div>
+
+  <div class="annotation-card">
+    <h3>Styling Tokens</h3>
+    <ul>
+      <li>Interactive blue: #264ae5</li>
+      <li>Selection bg: #dce6fb</li>
+      <li>Border: #d7d7d7</li>
+      <li>Panel height: configurable CSS value</li>
+      <li>Atlas Design System compatible</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">
+  TransferList · conclusion low code company · Mendix Pluggable Widget · Web Only · Wireframe v1.0
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     JAVASCRIPT — interactive demo logic
+═════════════════════════════════════════════════════════════════════ -->
+<script>
+  // ── Data ──────────────────────────────────────────────────────────
+  const COLORS = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#6366f1','#ec4899','#8b5cf6','#14b8a6','#f59e0b'];
+  function initials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+  let leftItems = [
+    { id:1,  name:'Alice Johnson',     role:'Senior Developer',  color:'#6366f1' },
+    { id:2,  name:'Bob Martens',       role:'UX Designer',       color:'#ec4899' },
+    { id:3,  name:'Cindy Hoekstra',    role:'Product Owner',     color:'#f97316' },
+    { id:4,  name:'David de Vries',    role:'Data Analyst',      color:'#22c55e' },
+    { id:5,  name:'Eva Smit',          role:'QA Engineer',       color:'#06b6d4' },
+    { id:6,  name:'Frank Visser',      role:'DevOps Engineer',   color:'#8b5cf6' },
+    { id:7,  name:'Grace Bakker',      role:'Business Analyst',  color:'#ef4444' },
+  ];
+  let rightItems = [
+    { id:8,  name:'Henk Jansen',       role:'Architect',         color:'#eab308' },
+    { id:9,  name:'Iris van Dijk',     role:'Scrum Master',      color:'#14b8a6' },
+    { id:10, name:'Jan de Boer',       role:'Frontend Developer',color:'#f59e0b' },
+  ];
+
+  let currentMode = 'click';
+  let selectedLeft  = new Set();
+  let selectedRight = new Set();
+  let showSearch = false;
+  let showMoveAll = false;
+  let emptyRight = false;
+  let dragItem = null;
+  let dragSource = null;
+
+  // ── Mode descriptions ─────────────────────────────────────────────
+  const modeInfo = {
+    click:       { icon:'👆', text:'<strong>Click mode:</strong> Single-click an item to immediately move it to the opposite panel. Arrow buttons are hidden in this mode.' },
+    dblclick:    { icon:'🖱️', text:'<strong>Double-click mode:</strong> Double-click an item to move it. Single clicks have no effect. Arrow buttons are hidden.' },
+    multiselect: { icon:'☑️', text:'<strong>Multi-select mode:</strong> Checkboxes appear on each item. Select one or more, then click the centre arrow button to move all selected items at once.' },
+    dragdrop:    { icon:'✋', text:'<strong>Drag & drop mode:</strong> Drag an item and drop it onto the opposite panel to move it. A drag handle appears on each item.' },
+  };
+
+  function setMode(mode, btn) {
+    currentMode = mode;
+    selectedLeft.clear();
+    selectedRight.clear();
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const info = modeInfo[mode];
+    document.getElementById('modeDesc').querySelector('.icon').textContent = info.icon;
+    document.getElementById('modeDescText').innerHTML = info.text;
+
+    render();
+  }
+
+  // ── Toggles ───────────────────────────────────────────────────────
+  function toggleSearch() {
+    showSearch = document.getElementById('toggleSearch').checked;
+    document.getElementById('leftSearch').style.display  = showSearch ? '' : 'none';
+    document.getElementById('rightSearch').style.display = showSearch ? '' : 'none';
+  }
+  function toggleMoveAll() {
+    showMoveAll = document.getElementById('toggleMoveAll').checked;
+    render();
+  }
+  function toggleEmpty() {
+    emptyRight = document.getElementById('toggleEmpty').checked;
+    if (emptyRight) {
+      rightItems = [];
+    } else {
+      rightItems = [
+        { id:8,  name:'Henk Jansen',       role:'Architect',         color:'#eab308' },
+        { id:9,  name:'Iris van Dijk',     role:'Scrum Master',      color:'#14b8a6' },
+        { id:10, name:'Jan de Boer',       role:'Frontend Developer',color:'#f59e0b' },
+      ];
+    }
+    render();
+  }
+
+  // ── Render helpers ────────────────────────────────────────────────
+  function buildItem(item, side, filtered) {
+    const isMulti   = currentMode === 'multiselect';
+    const isDrag    = currentMode === 'dragdrop';
+    const isSelected = (side === 'left' ? selectedLeft : selectedRight).has(item.id);
+    const isFiltered = filtered && !filtered.includes(item.id);
+    if (isFiltered) return '';
+
+    let cls = 'tl-item';
+    if (isSelected) cls += ' selected';
+    if (isDrag)     cls += ' draggable';
+
+    const checkbox = isMulti
+      ? `<div class="tl-checkbox"></div>`
+      : '';
+    const handle = isDrag
+      ? `<span class="tl-drag-handle">⠿</span>`
+      : '';
+    const avatar = `<div class="tl-avatar" style="background:${item.color}">${initials(item.name)}</div>`;
+
+    const events = buildEvents(item, side);
+
+    return `
+      <div class="${cls}" data-id="${item.id}" data-side="${side}" ${events}
+           ${isDrag ? `draggable="true"` : ''}>
+        ${handle}
+        ${checkbox}
+        ${avatar}
+        <div class="tl-item-text">
+          <div class="tl-item-name">${item.name}</div>
+          <div class="tl-item-meta">${item.role}</div>
+        </div>
+      </div>`;
+  }
+
+  function buildEvents(item, side) {
+    switch(currentMode) {
+      case 'click':
+        return `onclick="moveItem(${item.id},'${side}')"`;
+      case 'dblclick':
+        return `ondblclick="moveItem(${item.id},'${side}')"`;
+      case 'multiselect':
+        return `onclick="toggleSelect(${item.id},'${side}')"`;
+      case 'dragdrop':
+        return `ondragstart="onDragStart(event,${item.id},'${side}')" ondragend="onDragEnd(event)"`;
+      default: return '';
+    }
+  }
+
+  function buildControls() {
+    const c = document.getElementById('tlControls');
+    c.innerHTML = '';
+
+    if (currentMode === 'click' || currentMode === 'dblclick') {
+      // No controls in these modes
+      return;
+    }
+
+    const addAllBtn = showMoveAll
+      ? `<button class="tl-btn" title="Move all to Selected" onclick="moveAll('left')">&raquo;</button>` : '';
+    const removeAllBtn = showMoveAll
+      ? `<button class="tl-btn" title="Move all to Available" onclick="moveAll('right')">&laquo;</button>` : '';
+    const divider = showMoveAll
+      ? `<div class="tl-btn-divider"></div>` : '';
+
+    if (currentMode === 'multiselect') {
+      c.innerHTML = `
+        ${addAllBtn}
+        <button class="tl-btn primary" title="Move selected to Selected panel" onclick="moveSelected('left')">&rsaquo;</button>
+        <button class="tl-btn" title="Move selected to Available panel" onclick="moveSelected('right')">&lsaquo;</button>
+        ${divider}
+        ${removeAllBtn}`;
+    }
+    if (currentMode === 'dragdrop') {
+      if (showMoveAll) {
+        c.innerHTML = `
+          ${addAllBtn}
+          ${divider}
+          ${removeAllBtn}`;
+      }
+      // no buttons needed for d&d if move-all is off
+    }
+  }
+
+  function render(leftFilter, rightFilter) {
+    const lb = document.getElementById('leftBody');
+    const rb = document.getElementById('rightBody');
+
+    const leftHtml  = leftItems.map(i => buildItem(i,'left', leftFilter)).join('');
+    const rightHtml = rightItems.map(i => buildItem(i,'right', rightFilter)).join('');
+
+    lb.innerHTML = leftHtml || `
+      <div class="tl-empty">
+        <div class="tl-empty-icon">📋</div>
+        <div>No available items</div>
+      </div>`;
+
+    rb.innerHTML = rightHtml || `
+      <div class="tl-empty">
+        <div class="tl-empty-icon">📥</div>
+        <div>No items selected yet</div>
+      </div>`;
+
+    document.getElementById('leftCount').textContent  = leftItems.length;
+    document.getElementById('rightCount').textContent = rightItems.length;
+
+    buildControls();
+    bindDragDrop();
+
+    // Restore visual selected state after re-render
+    selectedLeft.forEach(id => {
+      const el = lb.querySelector(`[data-id="${id}"]`);
+      if (el) el.classList.add('selected');
+    });
+    selectedRight.forEach(id => {
+      const el = rb.querySelector(`[data-id="${id}"]`);
+      if (el) el.classList.add('selected');
+    });
+  }
+
+  // ── Actions ───────────────────────────────────────────────────────
+  function moveItem(id, fromSide) {
+    if (fromSide === 'left') {
+      const idx = leftItems.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      rightItems.push(leftItems.splice(idx, 1)[0]);
+    } else {
+      const idx = rightItems.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      leftItems.push(rightItems.splice(idx, 1)[0]);
+    }
+    flash(fromSide === 'left' ? 'rightPanel' : 'leftPanel');
+    render();
+  }
+
+  function toggleSelect(id, side) {
+    const set = side === 'left' ? selectedLeft : selectedRight;
+    // clear selection on the other side
+    if (side === 'left') selectedRight.clear();
+    else selectedLeft.clear();
+
+    if (set.has(id)) set.delete(id);
+    else set.add(id);
+
+    render();
+  }
+
+  function moveSelected(fromSide) {
+    if (fromSide === 'left') {
+      const toMove = leftItems.filter(i => selectedLeft.has(i.id));
+      leftItems = leftItems.filter(i => !selectedLeft.has(i.id));
+      rightItems.push(...toMove);
+      selectedLeft.clear();
+      flash('rightPanel');
+    } else {
+      const toMove = rightItems.filter(i => selectedRight.has(i.id));
+      rightItems = rightItems.filter(i => !selectedRight.has(i.id));
+      leftItems.push(...toMove);
+      selectedRight.clear();
+      flash('leftPanel');
+    }
+    render();
+  }
+
+  function moveAll(fromSide) {
+    if (fromSide === 'left') {
+      rightItems.push(...leftItems);
+      leftItems = [];
+      flash('rightPanel');
+    } else {
+      leftItems.push(...rightItems);
+      rightItems = [];
+      flash('leftPanel');
+    }
+    selectedLeft.clear();
+    selectedRight.clear();
+    render();
+  }
+
+  function flash(panelId) {
+    const el = document.getElementById(panelId);
+    el.style.transition = 'none';
+    el.style.background = '#e8f0fe';
+    setTimeout(() => {
+      el.style.transition = 'background 0.4s ease';
+      el.style.background = '';
+    }, 20);
+  }
+
+  // ── Drag & Drop ───────────────────────────────────────────────────
+  function bindDragDrop() {
+    if (currentMode !== 'dragdrop') return;
+
+    ['leftPanel','rightPanel'].forEach(panelId => {
+      const panel = document.getElementById(panelId);
+      panel.addEventListener('dragover', e => {
+        e.preventDefault();
+        panel.classList.add('drag-over');
+      }, { capture: false });
+      panel.addEventListener('dragleave', e => {
+        if (!panel.contains(e.relatedTarget)) panel.classList.remove('drag-over');
+      });
+      panel.addEventListener('drop', e => {
+        e.preventDefault();
+        panel.classList.remove('drag-over');
+        if (!dragItem) return;
+        const targetSide = panelId === 'leftPanel' ? 'left' : 'right';
+        if (dragSource === targetSide) return; // same panel, ignore
+        moveItem(dragItem, dragSource);
+      });
+    });
+  }
+
+  function onDragStart(e, id, side) {
+    dragItem = id;
+    dragSource = side;
+    e.currentTarget.classList.add('dragging');
+  }
+  function onDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    dragItem = null;
+    dragSource = null;
+    document.getElementById('leftPanel').classList.remove('drag-over');
+    document.getElementById('rightPanel').classList.remove('drag-over');
+  }
+
+  // ── Search / filter ───────────────────────────────────────────────
+  function filterItems(side, query) {
+    query = query.toLowerCase().trim();
+    if (!query) { render(); return; }
+    const filtered = (side === 'left' ? leftItems : rightItems)
+      .filter(i => i.name.toLowerCase().includes(query) || i.role.toLowerCase().includes(query))
+      .map(i => i.id);
+    if (side === 'left') render(filtered, null);
+    else render(null, filtered);
+  }
+
+  // ── Boot ──────────────────────────────────────────────────────────
+  render();
+</script>
+</body>
+</html>
