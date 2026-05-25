@@ -1,11 +1,11 @@
-import { DragEvent, ReactElement, ReactNode, createElement, memo, useCallback } from "react";
+import { DragEvent, ReactElement, ReactNode, createElement, memo, useCallback, useId } from "react";
 import { ObjectItem } from "mendix";
 import classNames from "classnames";
 import { TransferItem } from "./TransferItem";
 import { EMPTY_PLACEHOLDER, INTERACTION_MODES, InteractionMode, PanelSide, SEARCH_PLACEHOLDER } from "../constants";
 
 export interface TransferPanelProps {
-    label: string;
+    label: ReactNode;
     items: ObjectItem[];
     renderItem: (item: ObjectItem) => ReactNode;
     isSelected: (item: ObjectItem) => boolean;
@@ -53,6 +53,8 @@ export const TransferPanel = memo(
     }: TransferPanelProps): ReactElement => {
         const isDragDrop = interactionMode === INTERACTION_MODES.DRAG_DROP;
         const isMultiselect = interactionMode === INTERACTION_MODES.MULTISELECT;
+        // Stable id used to link the listbox to its visible label via aria-labelledby.
+        const labelId = useId();
 
         const handleBodyDragOver = useCallback(
             (e: DragEvent<HTMLDivElement>) => {
@@ -74,11 +76,11 @@ export const TransferPanel = memo(
             <div
                 className={classNames("transfer-list__panel", `transfer-list__panel--${panelSide}`)}
                 role="listbox"
-                aria-label={label}
+                aria-labelledby={labelId}
                 aria-multiselectable={isMultiselect || undefined}
             >
                 <div className="transfer-list__panel-header">
-                    <span className="transfer-list__panel-label">{label}</span>
+                    <span id={labelId} className="transfer-list__panel-label">{label}</span>
                     <span className="transfer-list__panel-count" aria-live="polite">
                         {items.length}
                     </span>
@@ -91,7 +93,7 @@ export const TransferPanel = memo(
                             placeholder={SEARCH_PLACEHOLDER}
                             value={searchQuery}
                             onChange={e => onSearchChange(e.target.value)}
-                            aria-label={`Search ${label}`}
+                            aria-label={`Search ${panelSide} panel`}
                         />
                     </div>
                 )}

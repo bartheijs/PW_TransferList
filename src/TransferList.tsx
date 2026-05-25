@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { TransferListContainerProps } from "../typings/TransferListProps";
 import { TransferPanel } from "./components/TransferPanel";
 import { TransferControls } from "./components/TransferControls";
-import { DEFAULT_LEFT_LABEL, DEFAULT_PANEL_HEIGHT, DEFAULT_RIGHT_LABEL, PanelSide } from "./constants";
+import { DEFAULT_PANEL_HEIGHT, PanelSide } from "./constants";
 import { executeAction, executeListItemAction } from "./utils/executeActions";
 import { filterItemsBySearch } from "./utils/filterItems";
 import "./ui/TransferList.css";
@@ -172,13 +172,11 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
     const isRightSelected = useCallback((item: ObjectItem) => rightSelection.has(item.id), [rightSelection]);
 
     const resolvedHeight = panelHeight || DEFAULT_PANEL_HEIGHT;
-    const resolvedLeftLabel = leftLabel || DEFAULT_LEFT_LABEL;
-    const resolvedRightLabel = rightLabel || DEFAULT_RIGHT_LABEL;
 
     return (
         <div className={classNames("transfer-list", className)} style={style} tabIndex={tabIndex}>
             <TransferPanel
-                label={resolvedLeftLabel}
+                label={leftLabel}
                 items={leftItems}
                 renderItem={renderLeftItem}
                 isSelected={isLeftSelected}
@@ -208,7 +206,7 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
                 onMoveAllLeft={handleMoveAllLeft}
             />
             <TransferPanel
-                label={resolvedRightLabel}
+                label={rightLabel}
                 items={rightItems}
                 renderItem={renderRightItem}
                 isSelected={isRightSelected}

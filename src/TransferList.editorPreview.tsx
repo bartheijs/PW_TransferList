@@ -2,11 +2,19 @@ import { createElement, ReactElement } from "react";
 import { TransferListPreviewProps } from "../typings/TransferListProps";
 
 export function preview({ leftLabel, rightLabel }: TransferListPreviewProps): ReactElement {
+    const LeftLabelRenderer = leftLabel.renderer;
+    const RightLabelRenderer = rightLabel.renderer;
+
     return (
         <div className="transfer-list transfer-list--preview">
             <div className="transfer-list__panel">
                 <div className="transfer-list__panel-header">
-                    <span className="transfer-list__panel-label">{leftLabel || "Available"}</span>
+                    <span className="transfer-list__panel-label">
+                        {/* Render the widget drop zone; children are shown when the slot is empty. */}
+                        <LeftLabelRenderer>
+                            <span className="transfer-list__panel-label--placeholder">Left label</span>
+                        </LeftLabelRenderer>
+                    </span>
                 </div>
                 <div className="transfer-list__panel-body transfer-list__panel-body--preview">
                     <span className="transfer-list__preview-hint">Left panel items</span>
@@ -18,7 +26,12 @@ export function preview({ leftLabel, rightLabel }: TransferListPreviewProps): Re
             </div>
             <div className="transfer-list__panel">
                 <div className="transfer-list__panel-header">
-                    <span className="transfer-list__panel-label">{rightLabel || "Selected"}</span>
+                    <span className="transfer-list__panel-label">
+                        {/* Render the widget drop zone; children are shown when the slot is empty. */}
+                        <RightLabelRenderer>
+                            <span className="transfer-list__panel-label--placeholder">Right label</span>
+                        </RightLabelRenderer>
+                    </span>
                 </div>
                 <div className="transfer-list__panel-body transfer-list__panel-body--preview">
                     <span className="transfer-list__preview-hint">Right panel items</span>

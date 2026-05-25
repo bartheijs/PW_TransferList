@@ -15,10 +15,10 @@ export interface TransferListContainerProps {
     tabIndex?: number;
     leftDataSource: ListValue;
     leftContent?: ListWidgetValue;
-    leftLabel: string;
+    leftLabel?: ReactNode;
     rightDataSource: ListValue;
     rightContent?: ListWidgetValue;
-    rightLabel: string;
+    rightLabel?: ReactNode;
     interactionMode: InteractionModeEnum;
     onAdd?: ListActionValue;
     onRemove?: ListActionValue;
@@ -45,10 +45,10 @@ export interface TransferListPreviewProps {
     translate: (text: string) => string;
     leftDataSource: {} | { caption: string } | { type: string } | null;
     leftContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
-    leftLabel: string;
+    leftLabel: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     rightDataSource: {} | { caption: string } | { type: string } | null;
     rightContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
-    rightLabel: string;
+    rightLabel: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     interactionMode: InteractionModeEnum;
     onAdd: {} | null;
     onRemove: {} | null;

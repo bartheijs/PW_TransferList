@@ -16,7 +16,7 @@
                 <caption>Left panel content</caption>
                 <description>Content template for each left panel item</description>
             </property>
-            <property key="leftLabel" type="string" required="false" defaultValue="Available">
+            <property key="leftLabel" type="widgets" required="false">
                 <caption>Left panel label</caption>
                 <description>Label shown above the left panel</description>
             </property>
@@ -28,7 +28,7 @@
                 <caption>Right panel content</caption>
                 <description>Content template for each right panel item</description>
             </property>
-            <property key="rightLabel" type="string" required="false" defaultValue="Selected">
+            <property key="rightLabel" type="widgets" required="false">
                 <caption>Right panel label</caption>
                 <description>Label shown above the right panel</description>
             </property>

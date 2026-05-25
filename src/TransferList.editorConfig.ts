@@ -125,9 +125,9 @@ export function getPreview(values: TransferListPreviewProps): PreviewProps {
                 padding: 8,
                 children: [
                     {
-                        type: "Text",
-                        content: values.leftLabel || "Available",
-                        bold: true
+                        type: "DropZone",
+                        property: values.leftLabel as object,
+                        placeholder: "Left panel label"
                     },
                     {
                         type: "DropZone",
@@ -152,9 +152,9 @@ export function getPreview(values: TransferListPreviewProps): PreviewProps {
                 padding: 8,
                 children: [
                     {
-                        type: "Text",
-                        content: values.rightLabel || "Selected",
-                        bold: true
+                        type: "DropZone",
+                        property: values.rightLabel as object,
+                        placeholder: "Right panel label"
                     },
                     {
                         type: "DropZone",

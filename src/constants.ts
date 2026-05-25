@@ -1,12 +1,6 @@
 /** Prefix passed as the first argument to every `console.warn` / `console.error` call. */
 export const LOG_PREFIX = "[TransferList]";
 
-/** Fallback label for the left panel when the property is empty. */
-export const DEFAULT_LEFT_LABEL = "Available";
-
-/** Fallback label for the right panel when the property is empty. */
-export const DEFAULT_RIGHT_LABEL = "Selected";
-
 /** Fallback height for the scrollable panel body when the property is empty. */
 export const DEFAULT_PANEL_HEIGHT = "300px";
 
