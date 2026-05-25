@@ -52,14 +52,6 @@
                 <caption>Remove action</caption>
                 <description>Action executed when an item moves to the left panel</description>
             </property>
-            <property key="onAddAll" type="action" required="false">
-                <caption>Add all action</caption>
-                <description>Action executed when all items move to the right panel</description>
-            </property>
-            <property key="onRemoveAll" type="action" required="false">
-                <caption>Remove all action</caption>
-                <description>Action executed when all items move to the left panel</description>
-            </property>
         </propertyGroup>
         <propertyGroup caption="Search">
             <property key="showLeftSearch" type="boolean" defaultValue="false">

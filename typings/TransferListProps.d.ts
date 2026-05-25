@@ -4,7 +4,7 @@
  * @author Mendix Widgets Framework Team
  */
 import { ComponentType, CSSProperties, ReactNode } from "react";
-import { ActionValue, ListValue, ListActionValue, ListExpressionValue, ListWidgetValue } from "mendix";
+import { ListValue, ListActionValue, ListExpressionValue, ListWidgetValue } from "mendix";
 
 export type InteractionModeEnum = "click" | "dblclick" | "multiselect" | "dragdrop";
 
@@ -22,8 +22,6 @@ export interface TransferListContainerProps {
     interactionMode: InteractionModeEnum;
     onAdd?: ListActionValue;
     onRemove?: ListActionValue;
-    onAddAll?: ActionValue;
-    onRemoveAll?: ActionValue;
     showLeftSearch: boolean;
     leftSearchAttribute?: ListExpressionValue<string>;
     showRightSearch: boolean;
@@ -52,8 +50,6 @@ export interface TransferListPreviewProps {
     interactionMode: InteractionModeEnum;
     onAdd: {} | null;
     onRemove: {} | null;
-    onAddAll: {} | null;
-    onRemoveAll: {} | null;
     showLeftSearch: boolean;
     leftSearchAttribute: string;
     showRightSearch: boolean;

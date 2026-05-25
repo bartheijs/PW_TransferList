@@ -5,7 +5,7 @@ import { TransferListContainerProps } from "../typings/TransferListProps";
 import { TransferPanel } from "./components/TransferPanel";
 import { TransferControls } from "./components/TransferControls";
 import { DEFAULT_PANEL_HEIGHT, PanelSide } from "./constants";
-import { executeAction, executeListItemAction } from "./utils/executeActions";
+import { executeListItemAction } from "./utils/executeActions";
 import { filterItemsBySearch } from "./utils/filterItems";
 import "./ui/TransferList.css";
 
@@ -31,8 +31,6 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         interactionMode,
         onAdd,
         onRemove,
-        onAddAll,
-        onRemoveAll,
         showLeftSearch,
         leftSearchAttribute,
         showRightSearch,
@@ -120,8 +118,27 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         setRightSelection(new Set());
     }, [onRemove, rightDataSource.items, rightSelection]);
 
-    const handleMoveAllRight = useCallback(() => executeAction(onAddAll, "Add all"), [onAddAll]);
-    const handleMoveAllLeft = useCallback(() => executeAction(onRemoveAll, "Remove all"), [onRemoveAll]);
+    /** Moves every currently visible left-panel item to the right by reusing the onAdd action. */
+    const handleMoveAllRight = useCallback(() => {
+        if (!onAdd) {
+            return;
+        }
+        for (const item of leftItems) {
+            executeListItemAction(onAdd, item, "Add");
+        }
+        setLeftSelection(new Set());
+    }, [onAdd, leftItems]);
+
+    /** Moves every currently visible right-panel item to the left by reusing the onRemove action. */
+    const handleMoveAllLeft = useCallback(() => {
+        if (!onRemove) {
+            return;
+        }
+        for (const item of rightItems) {
+            executeListItemAction(onRemove, item, "Remove");
+        }
+        setRightSelection(new Set());
+    }, [onRemove, rightItems]);
 
     const handleLeftDragStart = useCallback((item: ObjectItem) => {
         dragSourceRef.current = { item, panel: "left" };

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Convert leftLabel and rightLabel from string to widgets property type *)"
+      "Bash(git commit -m 'Convert leftLabel and rightLabel from string to widgets property type *)",
+      "Bash(git commit -m 'Replace onAddAll/onRemoveAll actions with internal iteration over onAdd/onRemove *)"
     ]
   }
 }

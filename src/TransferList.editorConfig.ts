@@ -107,9 +107,6 @@ export function getProperties(values: TransferListPreviewProps, defaultPropertie
     if (!values.showRightSearch) {
         hidePropertiesIn(defaultProperties, values, ["rightSearchAttribute"]);
     }
-    if (!values.showMoveAll) {
-        hidePropertiesIn(defaultProperties, values, ["onAddAll", "onRemoveAll"]);
-    }
     return defaultProperties;
 }
 
