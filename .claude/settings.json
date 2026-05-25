@@ -7,7 +7,16 @@
       "Bash(git commit -m 'Replace onAddAll/onRemoveAll actions with internal iteration over onAdd/onRemove *)",
       "Bash(git commit -m 'Restructure property groups: remove custom Appearance tab *)",
       "Bash(git commit -m 'Add panelHeightMode \\(fixed/fill\\), fix ARIA structure and Safari CSS *)",
-      "Bash(git commit -m 'Replace panelHeight string with integer + unit enumeration *)"
+      "Bash(git commit -m 'Replace panelHeight string with integer + unit enumeration *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\\\\src\" -Recurse)",
+      "Bash(Select-Object FullName)",
+      "Bash(find \"c:\\\\Mendix\\\\PW_TransferList-main\" -name \"package.json\" | head -5)",
+      "Read(//c/Mendix/PW_TransferList-main/**)",
+      "PowerShell(cd \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\"; npm run lint:fix 2>&1 | Select-String -Pattern \"warn|error|✓|All matched\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\"; npm run build 2>&1 | Select-String -Pattern \"created|error|\\\\[!]|TS\\\\d{4}\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\"; npm run lint 2>&1 | Select-String \"warn|error|All matched\" | ForEach-Object { $_.Line })",
+      "PowerShell(head -120)",
+      "PowerShell(git add -A)"
     ]
   }
 }

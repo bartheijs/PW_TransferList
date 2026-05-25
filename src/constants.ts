@@ -19,7 +19,7 @@ export const PANEL_HEIGHT_MODES = {
 /** Union of all valid panel height mode values. */
 export type PanelHeightMode = (typeof PANEL_HEIGHT_MODES)[keyof typeof PANEL_HEIGHT_MODES];
 
-/** Placeholder text shown inside the search input when it is empty. */
+/** Placeholder text shown inside the search input when it is empty and no custom placeholder is configured. */
 export const SEARCH_PLACEHOLDER = "Search…";
 
 /** Text shown inside the panel body when there are no items to display. */
@@ -41,3 +41,24 @@ export type InteractionMode = (typeof INTERACTION_MODES)[keyof typeof INTERACTIO
 
 /** Identifies which of the two panels an event or drag originates from. */
 export type PanelSide = "left" | "right";
+
+/**
+ * Number of items above which a bulk-move operation (Move All / Move Selected) will
+ * emit a console.warn advising the developer to consider nanoflows or pagination.
+ * Each item triggers one action call; with microflows this means one XHR per item.
+ */
+export const BULK_MOVE_WARN_THRESHOLD = 20;
+
+/**
+ * Maximum milliseconds to show the bulk-move spinner before clearing it automatically.
+ * Acts as a safety net when the Mendix datasource never cycles through a loading state
+ * (e.g. the action was a no-op or Studio Pro preview mode).
+ */
+export const BULK_MOVE_SAFETY_TIMEOUT_MS = 5000;
+
+/**
+ * Minimum number of items that must be transferred for the bulk-move spinner
+ * to appear in the controls column. Single-item or very small moves do not
+ * warrant a loading indicator.
+ */
+export const BULK_MOVE_SPINNER_THRESHOLD = 5;

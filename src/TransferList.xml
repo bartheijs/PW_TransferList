@@ -5,32 +5,43 @@
         xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
     <name>Transfer List</name>
     <description>A Mendix widget to transfer objects from one list to another</description>
+    <studioProCategory>Data containers</studioProCategory>
     <icon/>
     <properties>
+        <propertyGroup caption="Source">
+            <propertyGroup caption="Left panel">
+                <property key="leftDataSource" type="datasource" isList="true">
+                    <caption>Left data source</caption>
+                    <description>Data source for the left panel items</description>
+                </property>
+                <property key="leftContent" type="widgets" dataSource="leftDataSource" required="false">
+                    <caption>Left panel content</caption>
+                    <description>Content template for each left panel item</description>
+                </property>
+                <property key="leftLabel" type="widgets" required="false">
+                    <caption>Left panel label</caption>
+                    <description>Label shown above the left panel</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Right panel">
+                <property key="rightDataSource" type="datasource" isList="true">
+                    <caption>Right data source</caption>
+                    <description>Data source for the right panel items</description>
+                </property>
+                <property key="rightContent" type="widgets" dataSource="rightDataSource" required="false">
+                    <caption>Right panel content</caption>
+                    <description>Content template for each right panel item</description>
+                </property>
+                <property key="rightLabel" type="widgets" required="false">
+                    <caption>Right panel label</caption>
+                    <description>Label shown above the right panel</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
         <propertyGroup caption="General">
-            <property key="leftDataSource" type="datasource" isList="true">
-                <caption>Left data source</caption>
-                <description>Data source for the left panel items</description>
-            </property>
-            <property key="leftContent" type="widgets" dataSource="leftDataSource" required="false">
-                <caption>Left panel content</caption>
-                <description>Content template for each left panel item</description>
-            </property>
-            <property key="leftLabel" type="widgets" required="false">
-                <caption>Left panel label</caption>
-                <description>Label shown above the left panel</description>
-            </property>
-            <property key="rightDataSource" type="datasource" isList="true">
-                <caption>Right data source</caption>
-                <description>Data source for the right panel items</description>
-            </property>
-            <property key="rightContent" type="widgets" dataSource="rightDataSource" required="false">
-                <caption>Right panel content</caption>
-                <description>Content template for each right panel item</description>
-            </property>
-            <property key="rightLabel" type="widgets" required="false">
-                <caption>Right panel label</caption>
-                <description>Label shown above the right panel</description>
+            <property key="showCount" type="boolean" defaultValue="true">
+                <caption>Show item count</caption>
+                <description>Show the number of items in each panel header.</description>
             </property>
             <property key="panelHeightMode" type="enumeration" defaultValue="fixed">
                 <caption>Panel height mode</caption>
@@ -53,6 +64,19 @@
                     <enumerationValue key="vh">vh</enumerationValue>
                 </enumerationValues>
             </property>
+            <property key="panelMinHeight" type="integer" defaultValue="0">
+                <caption>Panel min. height</caption>
+                <description>Minimum panel body height (fill mode only). 0 = no minimum. Prevents the panel from collapsing when few items are present.</description>
+            </property>
+            <property key="panelMinHeightUnit" type="enumeration" defaultValue="px">
+                <caption>Panel min. height unit</caption>
+                <description>CSS unit for the minimum panel height (fill mode only).</description>
+                <enumerationValues>
+                    <enumerationValue key="px">px</enumerationValue>
+                    <enumerationValue key="rem">rem</enumerationValue>
+                    <enumerationValue key="vh">vh</enumerationValue>
+                </enumerationValues>
+            </property>
         </propertyGroup>
         <propertyGroup caption="Interaction">
             <property key="interactionMode" type="enumeration" defaultValue="click">
@@ -65,36 +89,76 @@
                     <enumerationValue key="dragdrop">Drag and drop</enumerationValue>
                 </enumerationValues>
             </property>
+            <property key="moveRightIcon" type="icon" required="false">
+                <caption>Move selected right icon</caption>
+                <description>Icon for the Move selected to right button. Defaults to ›.</description>
+            </property>
+            <property key="moveLeftIcon" type="icon" required="false">
+                <caption>Move selected left icon</caption>
+                <description>Icon for the Move selected to left button. Defaults to ‹.</description>
+            </property>
             <property key="showMoveAll" type="boolean" defaultValue="false">
                 <caption>Show move all buttons</caption>
                 <description>Show buttons to move all items to either panel at once</description>
             </property>
-            <property key="onAdd" type="action" dataSource="leftDataSource" required="false">
-                <caption>Add action</caption>
-                <description>Action executed when an item moves to the right panel</description>
+            <property key="moveAllRightIcon" type="icon" required="false">
+                <caption>Move all right icon</caption>
+                <description>Icon for the Move all to right button. Defaults to ».</description>
             </property>
-            <property key="onRemove" type="action" dataSource="rightDataSource" required="false">
-                <caption>Remove action</caption>
-                <description>Action executed when an item moves to the left panel</description>
+            <property key="moveAllLeftIcon" type="icon" required="false">
+                <caption>Move all left icon</caption>
+                <description>Icon for the Move all to left button. Defaults to «.</description>
             </property>
         </propertyGroup>
+        <propertyGroup caption="Events">
+            <propertyGroup caption="Left to right">
+                <property key="onAdd" type="action" dataSource="leftDataSource" required="false">
+                    <caption>Add action</caption>
+                    <description>Action called once per item moved to the right panel. Use a nanoflow for large lists; a microflow fires one server request per item.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Right to left">
+                <property key="onRemove" type="action" dataSource="rightDataSource" required="false">
+                    <caption>Remove action</caption>
+                    <description>Action called once per item moved to the left panel. Use a nanoflow for large lists; a microflow fires one server request per item.</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
         <propertyGroup caption="Search">
-            <property key="showLeftSearch" type="boolean" defaultValue="false">
-                <caption>Show left search</caption>
-                <description>Show a search input above the left panel</description>
-            </property>
-            <property key="leftSearchAttribute" type="textTemplate" dataSource="leftDataSource" required="false">
-                <caption>Left search text</caption>
-                <description>Text template matched against the search query in the left panel</description>
-            </property>
-            <property key="showRightSearch" type="boolean" defaultValue="false">
-                <caption>Show right search</caption>
-                <description>Show a search input above the right panel</description>
-            </property>
-            <property key="rightSearchAttribute" type="textTemplate" dataSource="rightDataSource" required="false">
-                <caption>Right search text</caption>
-                <description>Text template matched against the search query in the right panel</description>
-            </property>
+            <propertyGroup caption="Left panel">
+                <property key="showLeftSearch" type="boolean" defaultValue="false">
+                    <caption>Show left search</caption>
+                    <description>Show a search input above the left panel</description>
+                </property>
+                <property key="leftSearchAttribute" type="textTemplate" dataSource="leftDataSource" required="false">
+                    <caption>Left search text</caption>
+                    <description>Text template matched against the search query in the left panel</description>
+                </property>
+                <property key="leftSearchPlaceholder" type="textTemplate" required="false">
+                    <caption>Left search placeholder</caption>
+                    <description>Placeholder text shown in the left panel search box. Supports Mendix translations.</description>
+                    <translations>
+                        <translation lang="en_US">Search…</translation>
+                    </translations>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Right panel">
+                <property key="showRightSearch" type="boolean" defaultValue="false">
+                    <caption>Show right search</caption>
+                    <description>Show a search input above the right panel</description>
+                </property>
+                <property key="rightSearchAttribute" type="textTemplate" dataSource="rightDataSource" required="false">
+                    <caption>Right search text</caption>
+                    <description>Text template matched against the search query in the right panel</description>
+                </property>
+                <property key="rightSearchPlaceholder" type="textTemplate" required="false">
+                    <caption>Right search placeholder</caption>
+                    <description>Placeholder text shown in the right panel search box. Supports Mendix translations.</description>
+                    <translations>
+                        <translation lang="en_US">Search…</translation>
+                    </translations>
+                </property>
+            </propertyGroup>
         </propertyGroup>
     </properties>
 </widget>

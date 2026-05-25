@@ -66,10 +66,16 @@
        In fill mode the custom property is not set, so height stays auto
        and the flex layout fills the available column space. */
     height: var(--transfer-panel-height);
+    /* Min-height floor (fill mode only) — prevents the panel from collapsing
+       to nothing when only a few items are present. */
+    min-height: var(--transfer-panel-min-height);
 }
 
 /* Fill mode: the widget root stretches to 100% of its parent's height.
-   The panels and their bodies then grow via flex to fill that space. */
+   The panels and their bodies then grow via flex to fill that space.
+   Once both datasources load, TransferList.tsx snapshots the rendered
+   offsetHeight and locks it as an inline pixel value — after that this
+   CSS rule is effectively superseded by the inline style. */
 .transfer-list--fill {
     height: 100%;
 }
@@ -155,6 +161,28 @@
 .transfer-list__btn {
     min-width: 36px;
     padding: 4px 8px;
+}
+
+/* ── Bulk-move spinner ───────────────────────────────────────── */
+
+/* Shown in the controls column while bulk-move actions are in flight.
+   Pure CSS — no additional dependencies required. */
+@keyframes transfer-list-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.transfer-list__spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d7d7d7;
+    border-top-color: #264ae5;
+    border-radius: 50%;
+    animation: transfer-list-spin 0.7s linear infinite;
+    /* Promote to compositor layer so the rotation only triggers Composite,
+       not Paint — avoids layout/paint churn during animation. */
+    will-change: transform;
 }
 
 /* ── Preview (Studio Pro canvas) ─────────────────────────────── */

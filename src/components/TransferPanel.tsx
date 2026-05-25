@@ -1,5 +1,5 @@
 import { CSSProperties, DragEvent, ReactElement, ReactNode, createElement, memo, useCallback, useId } from "react";
-import { ObjectItem } from "mendix";
+import { DynamicValue, ObjectItem } from "mendix";
 import classNames from "classnames";
 import { TransferItem } from "./TransferItem";
 import { EMPTY_PLACEHOLDER, INTERACTION_MODES, InteractionMode, PanelSide, SEARCH_PLACEHOLDER } from "../constants";
@@ -14,6 +14,10 @@ export interface TransferPanelProps {
     showSearch: boolean;
     searchQuery: string;
     onSearchChange: (query: string) => void;
+    /** Translatable placeholder text for the search input. Falls back to SEARCH_PLACEHOLDER constant. */
+    searchPlaceholder?: DynamicValue<string>;
+    /** Whether to display the item count in the panel header. */
+    showCount: boolean;
     onActivate: (item: ObjectItem) => void;
     onToggleSelect: (item: ObjectItem) => void;
     onDragStart: (item: ObjectItem) => void;
@@ -24,6 +28,8 @@ export interface TransferPanelProps {
     isDragOver: boolean;
     /** Explicit height for the panel body. `undefined` means fill-parent mode (no inline style). */
     panelHeight: string | undefined;
+    /** Minimum height for the panel body (fill mode only). Prevents collapse with sparse content. */
+    panelMinHeight?: string;
 }
 
 /**
@@ -42,6 +48,8 @@ export const TransferPanel = memo(
         showSearch,
         searchQuery,
         onSearchChange,
+        searchPlaceholder,
+        showCount,
         onActivate,
         onToggleSelect,
         onDragStart,
@@ -50,7 +58,8 @@ export const TransferPanel = memo(
         onDragOver,
         onDragLeave,
         isDragOver,
-        panelHeight
+        panelHeight,
+        panelMinHeight
     }: TransferPanelProps): ReactElement => {
         const isDragDrop = interactionMode === INTERACTION_MODES.DRAG_DROP;
         const isMultiselect = interactionMode === INTERACTION_MODES.MULTISELECT;
@@ -73,12 +82,16 @@ export const TransferPanel = memo(
             [onDrop]
         );
 
-        // Pass the configured height as a CSS custom property so the `height`
-        // rule itself lives in the external stylesheet. When undefined (fill
-        // mode), the property is not set and the CSS fallback applies.
-        const bodyStyle: CSSProperties | undefined = panelHeight
-            ? ({ "--transfer-panel-height": panelHeight } as CSSProperties)
-            : undefined;
+        // Pass the configured heights as CSS custom properties so the rules themselves
+        // live in the external stylesheet. When undefined (fill mode / not set),
+        // the properties are not set and the CSS fallbacks apply.
+        const bodyStyle: CSSProperties | undefined =
+            panelHeight || panelMinHeight
+                ? ({
+                      ...(panelHeight ? { "--transfer-panel-height": panelHeight } : {}),
+                      ...(panelMinHeight ? { "--transfer-panel-min-height": panelMinHeight } : {})
+                  } as CSSProperties)
+                : undefined;
 
         return (
             <div className={classNames("transfer-list__panel", `transfer-list__panel--${panelSide}`)}>
@@ -88,10 +101,13 @@ export const TransferPanel = memo(
                     <span id={labelId} className="transfer-list__panel-label">
                         {label}
                     </span>
-                    {/* aria-live region announces item count changes to screen readers. */}
-                    <span className="transfer-list__panel-count" aria-live="polite" aria-atomic="true">
-                        {items.length}
-                    </span>
+                    {/* div (not span) so theme authors can nest badges or secondary text;
+                        aria-live region announces item count changes to screen readers. */}
+                    {showCount && (
+                        <div className="transfer-list__panel-count" aria-live="polite" aria-atomic="true">
+                            {items.length}
+                        </div>
+                    )}
                 </div>
 
                 {/* Search input is outside the listbox — not an ARIA option. */}
@@ -100,7 +116,7 @@ export const TransferPanel = memo(
                         <input
                             type="search"
                             className="form-control transfer-list__search"
-                            placeholder={SEARCH_PLACEHOLDER}
+                            placeholder={searchPlaceholder?.value ?? SEARCH_PLACEHOLDER}
                             value={searchQuery}
                             onChange={e => onSearchChange(e.target.value)}
                             aria-label={`Search ${panelSide} panel`}
@@ -128,11 +144,7 @@ export const TransferPanel = memo(
                         // role="listbox" is only rendered when it has option children
                         // (TransferItem renders role="option"), satisfying the ARIA rule
                         // that a listbox must own at least one option or group.
-                        <div
-                            role="listbox"
-                            aria-labelledby={labelId}
-                            aria-multiselectable={isMultiselect}
-                        >
+                        <div role="listbox" aria-labelledby={labelId} aria-multiselectable={isMultiselect}>
                             {items.map(item => (
                                 <TransferItem
                                     key={item.id}

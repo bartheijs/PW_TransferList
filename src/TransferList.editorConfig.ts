@@ -101,15 +101,37 @@ export type PreviewProps =
     | DatasourceProps;
 
 export function getProperties(values: TransferListPreviewProps, defaultProperties: Properties): Properties {
+    // ── Search properties ────────────────────────────────────────────────────
     if (!values.showLeftSearch) {
-        hidePropertiesIn(defaultProperties, values, ["leftSearchAttribute"]);
+        hidePropertiesIn(defaultProperties, values, ["leftSearchAttribute", "leftSearchPlaceholder"]);
     }
     if (!values.showRightSearch) {
-        hidePropertiesIn(defaultProperties, values, ["rightSearchAttribute"]);
+        hidePropertiesIn(defaultProperties, values, ["rightSearchAttribute", "rightSearchPlaceholder"]);
     }
+
+    // ── Panel height properties ──────────────────────────────────────────────
     if (values.panelHeightMode === "fill") {
+        // Fill mode: explicit height is irrelevant
         hidePropertiesIn(defaultProperties, values, ["panelHeight", "panelHeightUnit"]);
+        // Hide the min-height unit until a numeric value has been entered
+        if (!values.panelMinHeight) {
+            hidePropertiesIn(defaultProperties, values, ["panelMinHeightUnit"]);
+        }
+    } else {
+        // Fixed mode: min-height is irrelevant (panelHeight is the deliberate choice)
+        hidePropertiesIn(defaultProperties, values, ["panelMinHeight", "panelMinHeightUnit"]);
     }
+
+    // ── Button icon properties ───────────────────────────────────────────────
+    // Move-all tab: icons are only relevant when the move-all buttons are shown
+    if (!values.showMoveAll) {
+        hidePropertiesIn(defaultProperties, values, ["moveAllRightIcon", "moveAllLeftIcon"]);
+    }
+    // Events tab: move-selected icons are only relevant in multiselect mode
+    if (values.interactionMode !== "multiselect") {
+        hidePropertiesIn(defaultProperties, values, ["moveRightIcon", "moveLeftIcon"]);
+    }
+
     return defaultProperties;
 }
 
