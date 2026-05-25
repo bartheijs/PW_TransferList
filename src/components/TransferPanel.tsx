@@ -1,4 +1,4 @@
-import { DragEvent, ReactElement, ReactNode, createElement, memo, useCallback, useId } from "react";
+import { CSSProperties, DragEvent, ReactElement, ReactNode, createElement, memo, useCallback, useId } from "react";
 import { ObjectItem } from "mendix";
 import classNames from "classnames";
 import { TransferItem } from "./TransferItem";
@@ -22,7 +22,8 @@ export interface TransferPanelProps {
     onDragOver: () => void;
     onDragLeave: () => void;
     isDragOver: boolean;
-    panelHeight: string;
+    /** Explicit height for the panel body. `undefined` means fill-parent mode (no inline style). */
+    panelHeight: string | undefined;
 }
 
 /**
@@ -72,19 +73,28 @@ export const TransferPanel = memo(
             [onDrop]
         );
 
+        // Pass the configured height as a CSS custom property so the `height`
+        // rule itself lives in the external stylesheet. When undefined (fill
+        // mode), the property is not set and the CSS fallback applies.
+        const bodyStyle: CSSProperties | undefined = panelHeight
+            ? ({ "--transfer-panel-height": panelHeight } as CSSProperties)
+            : undefined;
+
         return (
-            <div
-                className={classNames("transfer-list__panel", `transfer-list__panel--${panelSide}`)}
-                role="listbox"
-                aria-labelledby={labelId}
-                aria-multiselectable={isMultiselect || undefined}
-            >
+            <div className={classNames("transfer-list__panel", `transfer-list__panel--${panelSide}`)}>
+                {/* Header is outside any ARIA role so the label and count are
+                    not incorrectly owned by the listbox. */}
                 <div className="transfer-list__panel-header">
-                    <span id={labelId} className="transfer-list__panel-label">{label}</span>
-                    <span className="transfer-list__panel-count" aria-live="polite">
+                    <span id={labelId} className="transfer-list__panel-label">
+                        {label}
+                    </span>
+                    {/* aria-live region announces item count changes to screen readers. */}
+                    <span className="transfer-list__panel-count" aria-live="polite" aria-atomic="true">
                         {items.length}
                     </span>
                 </div>
+
+                {/* Search input is outside the listbox — not an ARIA option. */}
                 {showSearch && (
                     <div className="transfer-list__search-wrapper">
                         <input
@@ -97,35 +107,48 @@ export const TransferPanel = memo(
                         />
                     </div>
                 )}
+
+                {/* Scrollable body — drag handlers cover the full area including empty state. */}
                 <div
                     className={classNames("transfer-list__panel-body", {
                         "transfer-list__panel-body--drag-over": isDragOver
                     })}
-                    style={{ height: panelHeight }}
+                    style={bodyStyle}
                     onDragOver={isDragDrop ? handleBodyDragOver : undefined}
                     onDragLeave={isDragDrop ? onDragLeave : undefined}
                     onDrop={isDragDrop ? handleBodyDrop : undefined}
                 >
                     {items.length === 0 ? (
-                        <div className="transfer-list__empty" aria-live="polite">
+                        // role="status" announces the empty state without requiring
+                        // option children, avoiding an ARIA listbox violation.
+                        <div className="transfer-list__empty" role="status">
                             {EMPTY_PLACEHOLDER}
                         </div>
                     ) : (
-                        items.map(item => (
-                            <TransferItem
-                                key={item.id}
-                                item={item}
-                                isSelected={isSelected(item)}
-                                interactionMode={interactionMode}
-                                onActivate={onActivate}
-                                onToggleSelect={onToggleSelect}
-                                onDragStart={onDragStart}
-                                onDragEnd={onDragEnd}
-                                onDrop={onDrop}
-                            >
-                                {renderItem(item)}
-                            </TransferItem>
-                        ))
+                        // role="listbox" is only rendered when it has option children
+                        // (TransferItem renders role="option"), satisfying the ARIA rule
+                        // that a listbox must own at least one option or group.
+                        <div
+                            role="listbox"
+                            aria-labelledby={labelId}
+                            aria-multiselectable={isMultiselect}
+                        >
+                            {items.map(item => (
+                                <TransferItem
+                                    key={item.id}
+                                    item={item}
+                                    isSelected={isSelected(item)}
+                                    interactionMode={interactionMode}
+                                    onActivate={onActivate}
+                                    onToggleSelect={onToggleSelect}
+                                    onDragStart={onDragStart}
+                                    onDragEnd={onDragEnd}
+                                    onDrop={onDrop}
+                                >
+                                    {renderItem(item)}
+                                </TransferItem>
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>

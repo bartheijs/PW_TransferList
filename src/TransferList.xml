@@ -32,9 +32,17 @@
                 <caption>Right panel label</caption>
                 <description>Label shown above the right panel</description>
             </property>
+            <property key="panelHeightMode" type="enumeration" defaultValue="fixed">
+                <caption>Panel height mode</caption>
+                <description>Fixed: set an explicit height. Fill: expand to fill the parent container.</description>
+                <enumerationValues>
+                    <enumerationValue key="fixed">Fixed height</enumerationValue>
+                    <enumerationValue key="fill">Fill parent container</enumerationValue>
+                </enumerationValues>
+            </property>
             <property key="panelHeight" type="string" required="false" defaultValue="300px">
                 <caption>Panel height</caption>
-                <description>Height of the scrollable panel body, e.g. 300px or 20rem</description>
+                <description>Height of the scrollable panel body (fixed mode only), e.g. 300px or 20rem</description>
             </property>
         </propertyGroup>
         <propertyGroup caption="Interaction">

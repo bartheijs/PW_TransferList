@@ -1,8 +1,20 @@
 /** Prefix passed as the first argument to every `console.warn` / `console.error` call. */
 export const LOG_PREFIX = "[TransferList]";
 
-/** Fallback height for the scrollable panel body when the property is empty. */
+/** Fallback height for the scrollable panel body when mode is "fixed" and no value is set. */
 export const DEFAULT_PANEL_HEIGHT = "300px";
+
+/**
+ * Keys for the `panelHeightMode` enumeration property.
+ * Must stay in sync with `<enumerationValue>` keys in `TransferList.xml`.
+ */
+export const PANEL_HEIGHT_MODES = {
+    FIXED: "fixed",
+    FILL: "fill"
+} as const;
+
+/** Union of all valid panel height mode values. */
+export type PanelHeightMode = (typeof PANEL_HEIGHT_MODES)[keyof typeof PANEL_HEIGHT_MODES];
 
 /** Placeholder text shown inside the search input when it is empty. */
 export const SEARCH_PLACEHOLDER = "Search…";

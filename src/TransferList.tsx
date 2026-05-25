@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { TransferListContainerProps } from "../typings/TransferListProps";
 import { TransferPanel } from "./components/TransferPanel";
 import { TransferControls } from "./components/TransferControls";
-import { DEFAULT_PANEL_HEIGHT, PanelSide } from "./constants";
+import { DEFAULT_PANEL_HEIGHT, PANEL_HEIGHT_MODES, PanelSide } from "./constants";
 import { executeListItemAction } from "./utils/executeActions";
 import { filterItemsBySearch } from "./utils/filterItems";
 import "./ui/TransferList.css";
@@ -36,6 +36,7 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         showRightSearch,
         rightSearchAttribute,
         showMoveAll,
+        panelHeightMode,
         panelHeight,
         class: className,
         style,
@@ -188,10 +189,18 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
     const isLeftSelected = useCallback((item: ObjectItem) => leftSelection.has(item.id), [leftSelection]);
     const isRightSelected = useCallback((item: ObjectItem) => rightSelection.has(item.id), [rightSelection]);
 
-    const resolvedHeight = panelHeight || DEFAULT_PANEL_HEIGHT;
+    // In fill mode the panel body has no explicit height; it relies on flex
+    // to fill the available space. In fixed mode a fallback ensures a usable
+    // height even when the property is left empty in Studio Pro.
+    const isFill = panelHeightMode === PANEL_HEIGHT_MODES.FILL;
+    const resolvedHeight = isFill ? undefined : panelHeight || DEFAULT_PANEL_HEIGHT;
 
     return (
-        <div className={classNames("transfer-list", className)} style={style} tabIndex={tabIndex}>
+        <div
+            className={classNames("transfer-list", { "transfer-list--fill": isFill }, className)}
+            style={style}
+            tabIndex={tabIndex}
+        >
             <TransferPanel
                 label={leftLabel}
                 items={leftItems}

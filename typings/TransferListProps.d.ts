@@ -6,6 +6,8 @@
 import { ComponentType, CSSProperties, ReactNode } from "react";
 import { ListValue, ListActionValue, ListExpressionValue, ListWidgetValue } from "mendix";
 
+export type PanelHeightModeEnum = "fixed" | "fill";
+
 export type InteractionModeEnum = "click" | "dblclick" | "multiselect" | "dragdrop";
 
 export interface TransferListContainerProps {
@@ -19,6 +21,7 @@ export interface TransferListContainerProps {
     rightDataSource: ListValue;
     rightContent?: ListWidgetValue;
     rightLabel?: ReactNode;
+    panelHeightMode: PanelHeightModeEnum;
     panelHeight: string;
     interactionMode: InteractionModeEnum;
     showMoveAll: boolean;
@@ -47,6 +50,7 @@ export interface TransferListPreviewProps {
     rightDataSource: {} | { caption: string } | { type: string } | null;
     rightContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     rightLabel: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
+    panelHeightMode: PanelHeightModeEnum;
     panelHeight: string;
     interactionMode: InteractionModeEnum;
     showMoveAll: boolean;

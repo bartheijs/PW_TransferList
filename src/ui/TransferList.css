@@ -62,6 +62,16 @@
     flex: 1 1 auto;
     border-radius: 0 0 4px 4px;
     transition: background-color 0.15s ease;
+    /* Height is driven by --transfer-panel-height when in fixed mode.
+       In fill mode the custom property is not set, so height stays auto
+       and the flex layout fills the available column space. */
+    height: var(--transfer-panel-height);
+}
+
+/* Fill mode: the widget root stretches to 100% of its parent's height.
+   The panels and their bodies then grow via flex to fill that space. */
+.transfer-list--fill {
+    height: 100%;
 }
 
 .transfer-list__panel-body--drag-over {
@@ -79,6 +89,7 @@
     padding: 6px 10px;
     cursor: pointer;
     border-bottom: 1px solid #ebebeb;
+    -webkit-user-select: none;
     user-select: none;
     transition: background-color 0.1s ease;
 }
