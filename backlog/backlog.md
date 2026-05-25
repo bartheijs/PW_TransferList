@@ -87,25 +87,18 @@ Standard transfer-list pattern: a checkbox in the header row that selects or des
 
 ---
 
-### 🔲 Move validation flow (per item)
-A configurable nanoflow called before a move is executed; the move only proceeds if the nanoflow returns `true`.
+### 🔲 Non-movable items with tooltip and detail selection
+Items whose move-eligibility is determined by an expression at render time. Non-movable items show a hover tooltip explaining why, but remain selectable so the user can inspect details in a listening Data View.
 
-- New optional `type="action"` properties `onBeforeAdd` (left datasource) and `onBeforeRemove` (right datasource).
-- Because standard `ListActionValue` actions are fire-and-forget (no return value), the validation result needs a bridge: a `type="attribute"` boolean property (e.g. `moveAllowed`) that the nanoflow writes before returning. The widget reads the attribute after the action completes and proceeds only if it is `true`.
-- Alternatively, if Mendix ever exposes return values on list actions, this simplifies to a single action call.
-- When validation fails the item stays in place; optionally trigger a separate `onValidationFail` action so the developer can show an error message or notification.
-- Works in all interaction modes: click, dblclick, multiselect (checked per item before the batch loop), and drag-and-drop.
-- Related to **Disabled items** (static, expression-based prevention) — validation flow is the dynamic, logic-driven counterpart.
+**The key insight:** validation is _pre-computed_ (expression on the item), not triggered at move time. The item visually communicates its state the moment it appears in the list — no surprise blocking dialogs.
 
----
-
-### 🔲 Disabled items
-An expression evaluated per item that prevents it from being moved, without hiding it.
-
-- New `type="expression"` property per panel (e.g. `leftItemDisabled`, `rightItemDisabled`) returning `Boolean`.
-- Disabled items are rendered but non-interactive: greyed out, not draggable, excluded from "Move All" and "Move Selected".
-- Accessible: `aria-disabled="true"` on the option element; keyboard focus skips disabled items.
-- Studio Pro: show a warning when `interactionMode` is `click` or `dblclick` and no disabled expression is configured (no-op, just informational).
+- New `type="expression"` boolean properties per panel: `leftItemMovable` / `rightItemMovable`. When `false`, the item cannot be moved.
+- New `type="textTemplate"` properties per panel: `leftItemNotMovableMessage` / `rightItemNotMovableMessage`. Text is shown in a tooltip on hover and as an `aria-description` for screen readers.
+- Non-movable items are rendered in a visually distinct (e.g. muted/greyed) style but remain **fully clickable for selection** — single click still fires `onItemFocus` so a "Listen to widget" Data View can display the item's details (e.g., a record explaining the restriction).
+- Non-movable items are excluded from: `onActivate` (click/dblclick move), drag-and-drop targets/sources, "Move All", and "Move Selected" bulk operations.
+- In multiselect mode the checkbox is shown but disabled (`aria-disabled="true"`); the item can still be focused/clicked for the Listen-to-widget selection.
+- Drag-and-drop: the item is not draggable (`draggable="false"`); if somehow dropped onto it cross-panel the drop is ignored.
+- Related to **Read-only / disabled mode** (widget-level lock) — this is the per-item, reason-aware counterpart.
 
 ---
 
