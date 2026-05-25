@@ -88,16 +88,16 @@ Standard transfer-list pattern: a checkbox in the header row that selects or des
 ---
 
 ### 🔲 Non-movable items with tooltip and detail selection
-Items whose move-eligibility is determined by an expression at render time. Non-movable items show a hover tooltip explaining why, but remain selectable so the user can inspect details in a listening Data View.
+Items whose move-eligibility is determined at render time. Non-movable items show a hover balloon explaining why, but remain selectable so the user can inspect details in a listening Data View.
 
-**The key insight:** validation is _pre-computed_ (expression on the item), not triggered at move time. The item visually communicates its state the moment it appears in the list — no surprise blocking dialogs.
+**The key insight:** validation is _pre-computed_ (expressions on the datasource item), not triggered at move time. Together the two properties below act like a validation-result object — a boolean outcome and a human-readable reason — both read from the same datasource item's attributes. The item visually communicates its state the moment it appears in the list, no surprise blocking dialogs.
 
 - New `type="expression"` boolean properties per panel: `leftItemMovable` / `rightItemMovable`. When `false`, the item cannot be moved.
-- New `type="textTemplate"` properties per panel: `leftItemNotMovableMessage` / `rightItemNotMovableMessage`. Text is shown in a tooltip on hover and as an `aria-description` for screen readers.
-- Non-movable items are rendered in a visually distinct (e.g. muted/greyed) style but remain **fully clickable for selection** — single click still fires `onItemFocus` so a "Listen to widget" Data View can display the item's details (e.g., a record explaining the restriction).
+- New `type="textTemplate"` properties per panel: `leftItemNotMovableMessage` / `rightItemNotMovableMessage`. When non-empty, the text is shown in a **hover balloon** (HTML `title` attribute + a custom CSS tooltip for consistent cross-browser styling) and as an `aria-description` for screen readers. Both properties draw from the same datasource object, so the developer can point them both at fields of the same entity (e.g. `CanTransfer` → boolean, `TransferBlockReason` → string).
+- Non-movable items are rendered in a visually distinct (e.g. muted/greyed) style but remain **fully clickable for selection** — single click still fires `onItemFocus` so a "Listen to widget" Data View can display the item's details and the full reason it cannot be moved.
 - Non-movable items are excluded from: `onActivate` (click/dblclick move), drag-and-drop targets/sources, "Move All", and "Move Selected" bulk operations.
 - In multiselect mode the checkbox is shown but disabled (`aria-disabled="true"`); the item can still be focused/clicked for the Listen-to-widget selection.
-- Drag-and-drop: the item is not draggable (`draggable="false"`); if somehow dropped onto it cross-panel the drop is ignored.
+- Drag-and-drop: the item is not draggable (`draggable="false"`); cross-panel drops onto it are ignored.
 - Related to **Read-only / disabled mode** (widget-level lock) — this is the per-item, reason-aware counterpart.
 
 ---
