@@ -200,6 +200,15 @@ When properties are shown in a dialog box, first-level groups (**General** and *
 
 Note that the **Common** and **Appearance** tabs are added to your widget configuration automatically. These tabs contain properties applicable to all widgets: [Name](/refguide/common-widget-properties/#name), [Class](/refguide/common-widget-properties/#class), [Style](/refguide/common-widget-properties/#style), and [Design Properties](/apidocs-mxsdk/apidocs/design-properties/).
 
+> ⚠️ **Never recreate the Common or Appearance tabs manually.**
+>
+> The **Common** tab (containing **Name**, **Tab index**, and **Visible**) and the **Appearance** tab are always injected by Studio Pro automatically for every widget. You do **not** need to — and **must not** — add them yourself:
+>
+> * Do **not** add a `<propertyGroup caption="Appearance">` to your XML. Studio Pro already renders its own Appearance tab; a custom one causes a **duplicate Appearance tab** in the dialog.
+> * Do **not** add `<systemProperty key="Name"/>`, `<systemProperty key="TabIndex"/>`, or `<systemProperty key="Visibility"/>` inside a custom property group. These system properties are already present in the auto-generated Common tab. Adding them manually moves them out of Common and into your custom group — it does not add extra capability.
+>
+> **Rule of thumb:** only use `<systemProperty>` to control the *position* of Name or TabIndex within a group you own (e.g. to place TabIndex next to an interaction property). If you have no specific positioning need, omit `<systemProperty>` elements entirely and let Studio Pro handle them.
+
 ## Widget Property
 
 This section will explain the shape of the widget property. For more detailed information on widget properties, see [Pluggable Widget Property Types](/apidocs-mxsdk/apidocs/pluggable-widgets-property-types-10/). Every `property` tag in the Widget Properties Definition has a shape similar to this:
