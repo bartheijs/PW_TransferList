@@ -47,6 +47,18 @@ Allow developers to configure the text (or content) shown when a panel has no it
 
 ---
 
+### 🔲 Persist selection across search filter changes (multiselect mode)
+Items that are checked remain selected even when the user types a search query that filters them out of view.
+
+- Currently the selection `Set<string>` already stores item IDs, not references to visible items, so the data model supports this — the gap is purely in UX: hidden items are silently excluded from Move Selected.
+- `handleMoveSelectedRight` / `handleMoveSelectedLeft` iterate over `leftDataSource.items` / `rightDataSource.items` (the full unfiltered list) and check against the selection set, so checked-but-hidden items **are** already moved correctly. The main work is making the behaviour visible and intentional rather than accidental.
+- The selection count badge (see below) should reflect the full selection, not just the visible subset — e.g. show "5 selected (2 hidden by search)" or simply "5 selected" while the filtered list shows fewer rows.
+- The Move Selected button tooltip / label should indicate that hidden selected items will also move.
+- The select-all checkbox (see below) should only select/deselect *visible* items, leaving hidden selections untouched.
+- When the search is cleared or changed, previously hidden selected items reappear with their checkboxes checked.
+
+---
+
 ### 🔲 Select-all checkbox in panel header (multiselect mode)
 Standard transfer-list pattern: a checkbox in the header row that selects or deselects all visible items in the panel at once.
 
