@@ -194,4 +194,35 @@ Allow keyboard users to trigger move actions without navigating to the button co
 
 ---
 
+### 🔲 Compare & swap mode
+A new interaction mode in which the user picks one item from the left panel and one from the right panel, then swaps them in a single operation. Both selected items are simultaneously exposed via "Listen to widget" so two Data Views can show their details side by side for comparison before the swap is confirmed.
+
+**How it works:**
+
+- Add `compare` as a new `interactionMode` enumeration value (`<enumerationValue key="compare">Compare &amp; swap</enumerationValue>`).
+- In compare mode a single click on an item **selects** it (highlighted, not moved). Clicking again on the same item deselects it.
+- At most one item can be selected per panel at a time — clicking a second item in the same panel moves the highlight to the new item.
+- When exactly one item is selected in each panel, a **Swap** button becomes active in the controls column (between the two panels).
+- Clicking Swap fires `onRemove` for the right-panel item and `onAdd` for the left-panel item — in that order, so the datasource counts stay consistent — then clears both selections.
+- An optional `swapIcon` (`type="icon"`) replaces the default swap glyph (⇄).
+
+**Comparison via Data Views ("Listen to widget"):**
+
+- Uses the same `leftSelection` and `rightSelection` properties (`type="selection"`, mode `Single`) that are already planned in the **"Listen to widget"** backlog item.
+- In compare mode both selections can be set simultaneously — left panel click updates `leftSelection`, right panel click updates `rightSelection` — so two Data Views (each listening to one panel) show both items' details side by side.
+- Clearing a selection (deselect or swap completes) sets the corresponding `SelectionSingleValue` to `undefined`.
+- Studio Pro: show an info message on `leftSelection` / `rightSelection` that compare mode is the recommended interaction mode for side-by-side comparison Data Views.
+
+**Interaction with non-movable items:**
+
+- A non-movable item (see **Non-movable items with tooltip**) can still be selected for comparison — the hover balloon still shows the reason — but the Swap button stays disabled as long as either selected item is non-movable.
+
+**Accessible behaviour:**
+
+- Selected items get `aria-selected="true"` on their `role="option"` element.
+- The Swap button is `aria-disabled="true"` until both panels have a selection; `aria-label="Swap selected items"` (or translatable equivalent).
+- Keyboard: `Space` selects/deselects the focused item; `Enter` on the Swap button triggers the swap.
+
+---
+
 _Add new items above this line._
