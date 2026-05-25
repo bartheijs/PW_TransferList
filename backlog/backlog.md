@@ -54,6 +54,17 @@ Allow developers to configure the text (or content) shown when a panel has no it
 
 ---
 
+### 🔲 Clear selection button (multiselect mode)
+A per-panel button that deselects all currently checked items in one click, without moving any items.
+
+- Only visible when `interactionMode` is `multiselect` and at least one item is checked.
+- Rendered in the panel header (alongside the item count and the future select-all checkbox).
+- Clears the full selection set, including items hidden by an active search filter.
+- Accessible: keyboard-focusable, labelled `"Clear selection"` (or translatable equivalent via `type="textTemplate"`).
+- Pairs naturally with the **select-all checkbox** and **persist selection across search** items — all three live in the same panel-header area.
+
+---
+
 ### 🔲 Persist selection across search filter changes (multiselect mode)
 Items that are checked remain selected even when the user types a search query that filters them out of view.
 
