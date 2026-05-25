@@ -87,6 +87,18 @@ Standard transfer-list pattern: a checkbox in the header row that selects or des
 
 ---
 
+### 🔲 Move validation flow (per item)
+A configurable nanoflow called before a move is executed; the move only proceeds if the nanoflow returns `true`.
+
+- New optional `type="action"` properties `onBeforeAdd` (left datasource) and `onBeforeRemove` (right datasource).
+- Because standard `ListActionValue` actions are fire-and-forget (no return value), the validation result needs a bridge: a `type="attribute"` boolean property (e.g. `moveAllowed`) that the nanoflow writes before returning. The widget reads the attribute after the action completes and proceeds only if it is `true`.
+- Alternatively, if Mendix ever exposes return values on list actions, this simplifies to a single action call.
+- When validation fails the item stays in place; optionally trigger a separate `onValidationFail` action so the developer can show an error message or notification.
+- Works in all interaction modes: click, dblclick, multiselect (checked per item before the batch loop), and drag-and-drop.
+- Related to **Disabled items** (static, expression-based prevention) — validation flow is the dynamic, logic-driven counterpart.
+
+---
+
 ### 🔲 Disabled items
 An expression evaluated per item that prevents it from being moved, without hiding it.
 
