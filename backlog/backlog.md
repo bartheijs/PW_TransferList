@@ -4,6 +4,13 @@ Possible future features for upcoming releases. Each item links to a detailed pl
 
 ---
 
+## 💡 Tips — read before picking the next feature
+
+> **Selection already survives search changes at the data level.**
+> The internal selection is a `Set<string>` of item IDs, and `handleMoveSelectedRight` / `handleMoveSelectedLeft` iterate the full unfiltered datasource — so checked items that are hidden by a search query are already moved correctly when the user clicks Move Selected. What is missing is making this _visible_: the count badge and the select-all checkbox both need to account for hidden-but-checked items. Pick this one together with **"Selection count badge"** and **"Select-all checkbox"** since all three touch the same part of the UI.
+
+---
+
 ## Features
 
 ### 🔲 "Listen to widget" — Data View selection support
