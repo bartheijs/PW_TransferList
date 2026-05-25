@@ -32,6 +32,10 @@
                 <caption>Right panel label</caption>
                 <description>Label shown above the right panel</description>
             </property>
+            <property key="panelHeight" type="string" required="false" defaultValue="300px">
+                <caption>Panel height</caption>
+                <description>Height of the scrollable panel body, e.g. 300px or 20rem</description>
+            </property>
         </propertyGroup>
         <propertyGroup caption="Interaction">
             <property key="interactionMode" type="enumeration" defaultValue="click">
@@ -43,6 +47,10 @@
                     <enumerationValue key="multiselect">Multi select</enumerationValue>
                     <enumerationValue key="dragdrop">Drag and drop</enumerationValue>
                 </enumerationValues>
+            </property>
+            <property key="showMoveAll" type="boolean" defaultValue="false">
+                <caption>Show move all buttons</caption>
+                <description>Show buttons to move all items to either panel at once</description>
             </property>
             <property key="onAdd" type="action" dataSource="leftDataSource" required="false">
                 <caption>Add action</caption>
@@ -70,19 +78,6 @@
                 <caption>Right search text</caption>
                 <description>Text template matched against the search query in the right panel</description>
             </property>
-        </propertyGroup>
-        <propertyGroup caption="Appearance">
-            <property key="showMoveAll" type="boolean" defaultValue="false">
-                <caption>Show move all buttons</caption>
-                <description>Show buttons to move all items to either panel at once</description>
-            </property>
-            <property key="panelHeight" type="string" required="false" defaultValue="300px">
-                <caption>Panel height</caption>
-                <description>Height of the scrollable panel body, e.g. 300px or 20rem</description>
-            </property>
-            <systemProperty key="Name"/>
-            <systemProperty key="TabIndex"/>
-            <systemProperty key="Visibility"/>
         </propertyGroup>
     </properties>
 </widget>

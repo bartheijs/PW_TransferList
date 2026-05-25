@@ -19,15 +19,15 @@ export interface TransferListContainerProps {
     rightDataSource: ListValue;
     rightContent?: ListWidgetValue;
     rightLabel?: ReactNode;
+    panelHeight: string;
     interactionMode: InteractionModeEnum;
+    showMoveAll: boolean;
     onAdd?: ListActionValue;
     onRemove?: ListActionValue;
     showLeftSearch: boolean;
     leftSearchAttribute?: ListExpressionValue<string>;
     showRightSearch: boolean;
     rightSearchAttribute?: ListExpressionValue<string>;
-    showMoveAll: boolean;
-    panelHeight: string;
 }
 
 export interface TransferListPreviewProps {
@@ -47,13 +47,13 @@ export interface TransferListPreviewProps {
     rightDataSource: {} | { caption: string } | { type: string } | null;
     rightContent: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
     rightLabel: { widgetCount: number; renderer: ComponentType<{ children: ReactNode; caption?: string }> };
+    panelHeight: string;
     interactionMode: InteractionModeEnum;
+    showMoveAll: boolean;
     onAdd: {} | null;
     onRemove: {} | null;
     showLeftSearch: boolean;
     leftSearchAttribute: string;
     showRightSearch: boolean;
     rightSearchAttribute: string;
-    showMoveAll: boolean;
-    panelHeight: string;
 }
