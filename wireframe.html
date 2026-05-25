@@ -3,105 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TransferList Widget — High-Fidelity Wireframe</title>
+  <title>TransferList Widget — Wireframe</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
       font-size: 14px;
       background: #f0f2f5;
       color: #1a1a2e;
-      min-height: 100vh;
       padding: 16px;
     }
 
-    /* ── Page header ──────────────────────────────────────────────── */
-    .page-header {
-      max-width: 900px;
-      margin: 0 auto 16px;
-    }
-    h1 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1a1a2e;
-    }
-    .subtitle {
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 3px;
-    }
+    /* ── Header ─────────────────────────────────────────────────── */
+    h1 { font-size: 17px; font-weight: 700; }
+    .subtitle { font-size: 11px; color: #6b7280; margin-top: 3px; }
 
-    /* ── Mode tab bar ─────────────────────────────────────────────── */
-    .tab-bar {
-      display: flex;
-      flex-wrap: wrap;
+    /* ── Tabs ───────────────────────────────────────────────────── */
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 4px;
       background: #e5e7eb;
       padding: 4px;
       border-radius: 10px;
-      width: 100%;
-      margin: 14px 0 0;
+      margin: 12px 0;
     }
-    .tab-btn {
-      flex: 1;
-      min-width: 80px;
-      padding: 7px 10px;
+    .tab {
+      padding: 7px 4px;
       border: none;
       background: transparent;
       border-radius: 7px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: #4b5563;
       cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
       text-align: center;
     }
-    .tab-btn:hover { background: #d1d5db; color: #111827; }
-    .tab-btn.active { background: #fff; color: #1a1a2e; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+    .tab.active { background: #fff; color: #111; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-weight: 600; }
 
-    /* ── Mode banner ──────────────────────────────────────────────── */
-    .mode-banner {
-      max-width: 900px;
-      margin: 12px auto;
+    /* ── Banner ─────────────────────────────────────────────────── */
+    .banner {
       background: #eff6ff;
       border: 1px solid #bfdbfe;
       border-radius: 8px;
-      padding: 9px 13px;
+      padding: 9px 12px;
       font-size: 12px;
       color: #1d4ed8;
-      display: flex;
-      align-items: flex-start;
-      gap: 7px;
+      margin-bottom: 12px;
       line-height: 1.5;
     }
-    .mode-banner .mi { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
 
-    /* ── Toggle row ───────────────────────────────────────────────── */
+    /* ── Toggles ─────────────────────────────────────────────────── */
     .toggle-row {
-      max-width: 900px;
-      margin: 0 auto 12px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px 20px;
+      gap: 8px 18px;
+      margin-bottom: 12px;
     }
-    .toggle-group {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      color: #4b5563;
-    }
+    .tg { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #4b5563; }
     .toggle {
       appearance: none;
-      width: 32px;
-      height: 18px;
+      width: 32px; height: 18px;
       background: #d1d5db;
       border-radius: 9px;
       cursor: pointer;
       position: relative;
-      transition: background 0.15s;
+      transition: background .15s;
       flex-shrink: 0;
     }
     .toggle:checked { background: #264ae5; }
@@ -112,72 +80,62 @@
       background: #fff;
       border-radius: 50%;
       top: 2.5px; left: 2.5px;
-      transition: left 0.15s;
+      transition: left .15s;
       box-shadow: 0 1px 3px rgba(0,0,0,.2);
     }
     .toggle:checked::after { left: 16.5px; }
 
-    /* ── Widget card ──────────────────────────────────────────────── */
-    .widget-card {
-      max-width: 900px;
-      margin: 0 auto 16px;
+    /* ── Widget card ─────────────────────────────────────────────── */
+    .card {
       background: #fff;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      padding: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      margin-bottom: 14px;
     }
-    .section-label {
+    .card-label {
       font-size: 10px;
       font-weight: 700;
+      letter-spacing: .8px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
       color: #9ca3af;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    /* ════════════════════════════════════════
-       THE TRANSFER LIST WIDGET
-    ════════════════════════════════════════ */
-    .transfer-list {
+    /* ═══════════════════════════════════
+       TRANSFER LIST WIDGET
+    ═══════════════════════════════════ */
+    .tl {
       display: grid;
-      /* left-panel | controls | right-panel — never collapse */
       grid-template-columns: 1fr auto 1fr;
       gap: 6px;
-      align-items: stretch;
+      align-items: start;
     }
 
     /* Panel */
     .tl-panel {
-      display: flex;
-      flex-direction: column;
       border: 1px solid #d7d7d7;
       border-radius: 4px;
       background: #fff;
       overflow: hidden;
-      transition: background 0.15s, border-color 0.15s;
     }
     .tl-panel.drag-over {
-      background: #e8f0fe;
-      border: 2px dashed #264ae5;
+      background: #e8f0fe !important;
+      border: 2px dashed #264ae5 !important;
     }
 
     /* Panel header */
-    .tl-panel-header {
+    .tl-hd {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 8px;
+      padding: 7px 8px;
       background: #f5f5f5;
       border-bottom: 1px solid #d7d7d7;
-      flex-shrink: 0;
     }
-    .tl-panel-label {
-      font-weight: 700;
-      font-size: 12px;
-      color: #111827;
-    }
-    .tl-panel-count {
+    .tl-hd-label { font-weight: 700; font-size: 12px; color: #111; }
+    .tl-hd-count {
       font-size: 11px;
       color: #6b7280;
       background: #e5e7eb;
@@ -186,55 +144,39 @@
     }
 
     /* Search */
-    .tl-search {
-      padding: 5px 6px;
-      border-bottom: 1px solid #ebebeb;
-      flex-shrink: 0;
-    }
+    .tl-search { padding: 5px 6px; border-bottom: 1px solid #ebebeb; }
     .tl-search input {
       width: 100%;
       height: 28px;
       border: 1px solid #d1d5db;
       border-radius: 5px;
-      padding: 0 7px 0 26px;
+      padding: 0 8px;
       font-size: 12px;
-      color: #374151;
-      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E") no-repeat 7px center;
       outline: none;
     }
-    .tl-search input:focus {
-      border-color: #264ae5;
-      box-shadow: 0 0 0 2px rgba(38,74,229,.12);
-    }
+    .tl-search input:focus { border-color: #264ae5; }
 
-    /* Scrollable body */
-    .tl-body {
-      overflow-y: auto;
-      height: 220px;   /* compact for mobile */
-    }
-    .tl-body::-webkit-scrollbar { width: 4px; }
-    .tl-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+    /* Body */
+    .tl-body { overflow-y: auto; max-height: 260px; }
 
-    /* Items */
+    /* Item */
     .tl-item {
       display: flex;
       align-items: center;
-      padding: 7px 8px;
+      gap: 8px;
+      padding: 8px 8px;
       border-bottom: 1px solid #ebebeb;
       cursor: pointer;
-      user-select: none;
-      transition: background 0.1s;
-      gap: 7px;
+      transition: background .1s;
     }
     .tl-item:last-child { border-bottom: none; }
-    .tl-item:hover { background: #f0f0f0; }
-    .tl-item.selected { background: #dce6fb; }
-    .tl-item.selected:hover { background: #c8d9f8; }
+    .tl-item:active, .tl-item:hover { background: #f0f0f0; }
+    .tl-item.sel { background: #dce6fb; }
+    .tl-item.sel:active { background: #c8d9f8; }
 
-    /* Avatar */
-    .tl-avatar {
-      width: 26px;
-      height: 26px;
+    /* Avatar circle */
+    .av {
+      width: 28px; height: 28px;
       border-radius: 50%;
       flex-shrink: 0;
       display: flex;
@@ -245,16 +187,16 @@
       color: #fff;
     }
 
-    .tl-item-text { flex: 1; min-width: 0; }
-    .tl-item-name {
+    .tl-item-body { flex: 1; min-width: 0; }
+    .tl-name {
       font-size: 12px;
       font-weight: 600;
-      color: #111827;
+      color: #111;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .tl-item-meta {
+    .tl-role {
       font-size: 10px;
       color: #6b7280;
       margin-top: 1px;
@@ -264,55 +206,50 @@
     }
 
     /* Checkbox (multiselect) */
-    .tl-checkbox {
-      width: 14px;
-      height: 14px;
+    .cb {
+      width: 15px; height: 15px;
       border: 1.5px solid #9ca3af;
       border-radius: 3px;
       flex-shrink: 0;
-      display: flex;
+      background: #fff;
+      display: none;           /* hidden by default; shown by JS */
       align-items: center;
       justify-content: center;
-      background: #fff;
     }
-    .tl-item.selected .tl-checkbox {
-      background: #264ae5;
-      border-color: #264ae5;
-    }
-    .tl-item.selected .tl-checkbox::after {
+    .tl-item.sel .cb { background: #264ae5; border-color: #264ae5; }
+    .tl-item.sel .cb::after {
       content: "";
-      display: block;
-      width: 7px; height: 4px;
+      width: 8px; height: 4px;
       border-left: 1.5px solid #fff;
       border-bottom: 1.5px solid #fff;
       transform: rotate(-45deg) translate(1px,-1px);
+      display: block;
     }
+    body.mode-multiselect .cb { display: flex; }
 
     /* Drag handle */
-    .tl-drag-handle {
+    .dh {
       color: #d1d5db;
       font-size: 14px;
       flex-shrink: 0;
       cursor: grab;
+      display: none;           /* shown by JS */
     }
+    body.mode-dragdrop .dh { display: block; }
+    body.mode-dragdrop .tl-item { cursor: grab; }
 
     /* Empty state */
     .tl-empty {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 28px 16px;
+      text-align: center;
       color: #9e9e9e;
       font-size: 12px;
-      gap: 6px;
-      padding: 16px;
-      text-align: center;
+      display: none;
     }
-    .tl-empty-icon { font-size: 24px; opacity: 0.4; }
+    .tl-empty .ei { font-size: 24px; margin-bottom: 6px; }
 
     /* Controls column */
-    .tl-controls {
+    .tl-ctrl {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -321,465 +258,507 @@
       padding: 4px 0;
       min-width: 34px;
     }
-    .tl-btn {
-      width: 32px;
-      height: 32px;
+    .btn {
+      width: 32px; height: 32px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
       background: #fff;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 700;
       color: #374151;
-      font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.12s ease;
       box-shadow: 0 1px 2px rgba(0,0,0,.06);
-      flex-shrink: 0;
+      transition: all .12s;
     }
-    .tl-btn:hover { background: #f3f4f6; border-color: #9ca3af; }
-    .tl-btn:active { background: #e5e7eb; transform: scale(0.95); }
-    .tl-btn.primary { background: #264ae5; border-color: #264ae5; color: #fff; }
-    .tl-btn.primary:hover { background: #1d3ab8; }
-    .tl-btn-divider { width: 20px; height: 1px; background: #e5e7eb; margin: 1px 0; }
+    .btn:active { background: #e5e7eb; transform: scale(.94); }
+    .btn.primary { background: #264ae5; border-color: #264ae5; color: #fff; }
+    .btn.primary:active { background: #1d3ab8; }
+    .divider { width: 20px; height: 1px; background: #e5e7eb; }
 
-    /* ── Annotation grid ──────────────────────────────────────────── */
-    .annotations {
-      max-width: 900px;
-      margin: 0 auto 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-    }
-    .ann-card {
+    /* Visibility helpers driven by mode class on body */
+    /* In click / dblclick modes: no control buttons */
+    body.mode-click     .ctrl-main,
+    body.mode-click     .ctrl-moveall,
+    body.mode-dblclick  .ctrl-main,
+    body.mode-dblclick  .ctrl-moveall { display: none; }
+
+    body.mode-dragdrop .ctrl-main { display: none; }
+
+    /* moveall only when toggle enabled */
+    .ctrl-moveall { display: none; }
+    body.show-moveall .ctrl-moveall { display: flex; }
+    body.show-moveall .ctrl-divider { display: block; }
+    .ctrl-divider { display: none; }
+
+    /* search bars */
+    .tl-search { display: none; }
+    body.show-search .tl-search { display: block; }
+
+    /* ── Visual states card ─────────────────────────────────────── */
+    .swatches { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+    .sw { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #374151; }
+    .sw-box { width: 28px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── Annotation cards ───────────────────────────────────────── */
+    .anns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .ann {
       background: #fff;
       border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 12px 14px;
+      padding: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,.04);
     }
-    .ann-card h3 {
+    .ann h3 {
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: .7px;
       color: #6b7280;
       margin-bottom: 7px;
     }
-    .ann-card ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-    .ann-card li {
-      font-size: 11px;
-      color: #374151;
-      display: flex;
-      align-items: flex-start;
-      gap: 5px;
-      line-height: 1.4;
-    }
-    .ann-card li::before { content: "•"; color: #264ae5; font-weight: 700; flex-shrink: 0; }
+    .ann ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .ann li { font-size: 11px; color: #374151; display: flex; gap: 5px; line-height: 1.4; }
+    .ann li::before { content: "•"; color: #264ae5; font-weight: 700; flex-shrink: 0; }
 
-    /* ── State swatches ───────────────────────────────────────────── */
-    .swatches {
-      max-width: 900px;
-      margin: 0 auto 16px;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.04);
-    }
-    .swatches h3 {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      color: #6b7280;
-      margin-bottom: 10px;
-    }
-    .swatch-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 20px;
-    }
-    .swatch {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 11px;
-      color: #374151;
-    }
-    .swatch-box {
-      width: 28px;
-      height: 16px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-
-    .footer {
-      max-width: 900px;
-      margin: 4px auto 0;
-      font-size: 10px;
-      color: #9ca3af;
-      text-align: center;
-    }
+    .footer { font-size: 10px; color: #9ca3af; text-align: center; padding-bottom: 8px; }
   </style>
 </head>
-<body>
+<body class="mode-click">
 
-<!-- ── Header ────────────────────────────────────────────────────── -->
-<div class="page-header">
-  <h1>TransferList Widget — Wireframe</h1>
-  <p class="subtitle">Mendix Pluggable Widget · Web · conclusion low code company</p>
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="setMode('click',this)">👆 Click</button>
-    <button class="tab-btn" onclick="setMode('dblclick',this)">🖱️ Dbl Click</button>
-    <button class="tab-btn" onclick="setMode('multiselect',this)">☑️ Multi</button>
-    <button class="tab-btn" onclick="setMode('dragdrop',this)">✋ Drag</button>
-  </div>
+<!-- ── Header ───────────────────────────────────────────────────── -->
+<h1>TransferList Widget — Wireframe</h1>
+<p class="subtitle">Mendix Pluggable Widget · Web · conclusion low code company</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="setMode('click',this)">👆 Click</button>
+  <button class="tab" onclick="setMode('dblclick',this)">🖱 Dbl</button>
+  <button class="tab" onclick="setMode('multiselect',this)">☑️ Multi</button>
+  <button class="tab" onclick="setMode('dragdrop',this)">✋ Drag</button>
 </div>
 
-<!-- ── Mode banner ────────────────────────────────────────────────── -->
-<div class="mode-banner">
-  <span class="mi" id="modeIcon">👆</span>
-  <span id="modeText"><strong>Click mode:</strong> Single-click an item to move it to the opposite panel immediately.</span>
+<div class="banner" id="banner">
+  👆 <strong>Click mode:</strong> Single-click an item to move it to the opposite panel immediately.
 </div>
 
-<!-- ── Toggles ────────────────────────────────────────────────────── -->
 <div class="toggle-row">
-  <div class="toggle-group">
-    <input type="checkbox" class="toggle" id="tSearch" onchange="applyToggles()">
+  <div class="tg">
+    <input type="checkbox" class="toggle" id="tSearch" onchange="toggleClass('show-search',this.checked)">
     <label for="tSearch">Search Bars</label>
   </div>
-  <div class="toggle-group">
-    <input type="checkbox" class="toggle" id="tMoveAll" onchange="applyToggles()">
-    <label for="tMoveAll">Move-All Buttons</label>
+  <div class="tg">
+    <input type="checkbox" class="toggle" id="tMoveAll" onchange="toggleClass('show-moveall',this.checked)">
+    <label for="tMoveAll">Move-All</label>
   </div>
-  <div class="toggle-group">
-    <input type="checkbox" class="toggle" id="tEmpty" onchange="applyToggles()">
-    <label for="tEmpty">Empty Right Panel</label>
+  <div class="tg">
+    <input type="checkbox" class="toggle" id="tEmpty" onchange="toggleEmpty(this.checked)">
+    <label for="tEmpty">Empty Right</label>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     THE WIDGET CARD
-═══════════════════════════════════════════════════════════════════ -->
-<div class="widget-card">
-  <div class="section-label">TransferList Widget · Employee Role Assignment</div>
+<!-- ════════════════════════════════════════
+     WIDGET CARD
+════════════════════════════════════════ -->
+<div class="card">
+  <div class="card-label">TransferList Widget · Employee Role Assignment</div>
 
-  <div class="transfer-list" id="transferList">
+  <div class="tl">
 
     <!-- LEFT PANEL -->
-    <div class="tl-panel" id="leftPanel">
-      <div class="tl-panel-header">
-        <span class="tl-panel-label">Available</span>
-        <span class="tl-panel-count" id="leftCount">7</span>
+    <div class="tl-panel" id="leftPanel"
+         ondragover="panelDragOver(event,'left')"
+         ondragleave="panelDragLeave(event,'left')"
+         ondrop="panelDrop(event,'left')">
+      <div class="tl-hd">
+        <span class="tl-hd-label">Available</span>
+        <span class="tl-hd-count" id="lCount">7</span>
       </div>
-      <div class="tl-search" id="leftSearch" style="display:none">
-        <input type="text" placeholder="Search…" oninput="filterItems('left',this.value)">
+      <div class="tl-search">
+        <input type="text" placeholder="Search available…" oninput="filterPanel('left',this.value)">
       </div>
-      <div class="tl-body" id="leftBody"></div>
+      <div class="tl-body" id="lBody">
+        <div class="tl-item" data-id="1" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#6366f1">AJ</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Alice Johnson</div>
+            <div class="tl-role">Sr. Developer</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="2" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#ec4899">BM</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Bob Martens</div>
+            <div class="tl-role">UX Designer</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="3" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#f97316">CH</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Cindy Hoekstra</div>
+            <div class="tl-role">Product Owner</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="4" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#22c55e">DV</div>
+          <div class="tl-item-body">
+            <div class="tl-name">David de Vries</div>
+            <div class="tl-role">Data Analyst</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="5" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#06b6d4">ES</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Eva Smit</div>
+            <div class="tl-role">QA Engineer</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="6" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#8b5cf6">FV</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Frank Visser</div>
+            <div class="tl-role">DevOps Engineer</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="7" data-side="left">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#ef4444">GB</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Grace Bakker</div>
+            <div class="tl-role">Business Analyst</div>
+          </div>
+        </div>
+        <div class="tl-empty" id="lEmpty">
+          <div class="ei">📋</div>No available items
+        </div>
+      </div>
     </div>
 
     <!-- CONTROLS -->
-    <div class="tl-controls" id="tlControls"></div>
-
-    <!-- RIGHT PANEL -->
-    <div class="tl-panel" id="rightPanel">
-      <div class="tl-panel-header">
-        <span class="tl-panel-label">Selected</span>
-        <span class="tl-panel-count" id="rightCount">3</span>
+    <div class="tl-ctrl">
+      <div class="ctrl-moveall" style="display:none">
+        <button class="btn" title="Move all →" onclick="moveAll('left')">»</button>
       </div>
-      <div class="tl-search" id="rightSearch" style="display:none">
-        <input type="text" placeholder="Search…" oninput="filterItems('right',this.value)">
+      <div class="ctrl-main">
+        <button class="btn primary" title="Move selected →" onclick="moveSelected('left')">›</button>
       </div>
-      <div class="tl-body" id="rightBody"></div>
+      <div class="ctrl-main">
+        <button class="btn" title="← Move selected" onclick="moveSelected('right')">‹</button>
+      </div>
+      <div class="ctrl-divider" style="display:none"><div class="divider"></div></div>
+      <div class="ctrl-moveall" style="display:none">
+        <button class="btn" title="← Move all" onclick="moveAll('right')">«</button>
+      </div>
     </div>
 
-  </div><!-- /transfer-list -->
-</div><!-- /widget-card -->
+    <!-- RIGHT PANEL -->
+    <div class="tl-panel" id="rightPanel"
+         ondragover="panelDragOver(event,'right')"
+         ondragleave="panelDragLeave(event,'right')"
+         ondrop="panelDrop(event,'right')">
+      <div class="tl-hd">
+        <span class="tl-hd-label">Selected</span>
+        <span class="tl-hd-count" id="rCount">3</span>
+      </div>
+      <div class="tl-search">
+        <input type="text" placeholder="Search selected…" oninput="filterPanel('right',this.value)">
+      </div>
+      <div class="tl-body" id="rBody">
+        <div class="tl-item" data-id="8" data-side="right">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#eab308">HJ</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Henk Jansen</div>
+            <div class="tl-role">Architect</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="9" data-side="right">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#14b8a6">IV</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Iris van Dijk</div>
+            <div class="tl-role">Scrum Master</div>
+          </div>
+        </div>
+        <div class="tl-item" data-id="10" data-side="right">
+          <span class="dh">⠿</span><div class="cb"></div>
+          <div class="av" style="background:#f59e0b">JB</div>
+          <div class="tl-item-body">
+            <div class="tl-name">Jan de Boer</div>
+            <div class="tl-role">Frontend Dev</div>
+          </div>
+        </div>
+        <div class="tl-empty" id="rEmpty">
+          <div class="ei">📥</div>Drop items here
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tl -->
+</div><!-- /card -->
 
 <!-- ── Visual states ─────────────────────────────────────────────── -->
-<div class="swatches">
-  <h3>Visual States</h3>
-  <div class="swatch-row">
-    <div class="swatch"><div class="swatch-box" style="background:#fff;border:1px solid #d7d7d7"></div>Default</div>
-    <div class="swatch"><div class="swatch-box" style="background:#f0f0f0;border:1px solid #d7d7d7"></div>Hover</div>
-    <div class="swatch"><div class="swatch-box" style="background:#dce6fb;border:1px solid #d7d7d7"></div>Selected</div>
-    <div class="swatch"><div class="swatch-box" style="background:#c8d9f8;border:1px solid #d7d7d7"></div>Sel + Hover</div>
-    <div class="swatch"><div class="swatch-box" style="background:#fff;outline:2px solid #264ae5"></div>Focused</div>
-    <div class="swatch"><div class="swatch-box" style="background:#e8f0fe;border:2px dashed #264ae5"></div>Drag-Over</div>
-    <div class="swatch"><div class="swatch-box" style="background:#f5f5f5;border:1px solid #d7d7d7"></div>Header</div>
+<div class="card">
+  <div class="card-label">Visual States</div>
+  <div class="swatches">
+    <div class="sw"><div class="sw-box" style="background:#fff;border:1px solid #d7d7d7"></div>Default</div>
+    <div class="sw"><div class="sw-box" style="background:#f0f0f0;border:1px solid #d7d7d7"></div>Hover</div>
+    <div class="sw"><div class="sw-box" style="background:#dce6fb;border:1px solid #d7d7d7"></div>Selected</div>
+    <div class="sw"><div class="sw-box" style="background:#c8d9f8;border:1px solid #d7d7d7"></div>Sel+Hover</div>
+    <div class="sw"><div class="sw-box" style="background:#fff;outline:2px solid #264ae5"></div>Focused</div>
+    <div class="sw"><div class="sw-box" style="background:#e8f0fe;border:2px dashed #264ae5"></div>Drag-Over</div>
   </div>
 </div>
 
 <!-- ── Annotations ────────────────────────────────────────────────── -->
-<div class="annotations">
-  <div class="ann-card">
+<div class="anns">
+  <div class="ann">
     <h3>Panel Anatomy</h3>
     <ul>
-      <li>Header: bold label + item count badge</li>
-      <li>Optional search bar (toggleable)</li>
-      <li>Scrollable item body (configurable height)</li>
-      <li>Empty-state when no items present</li>
-      <li>Border 1 px #d7d7d7 · radius 4 px</li>
+      <li>Header: label + count badge</li>
+      <li>Optional search bar</li>
+      <li>Scrollable item body</li>
+      <li>Empty-state when empty</li>
     </ul>
   </div>
-  <div class="ann-card">
+  <div class="ann">
     <h3>Item Template</h3>
     <ul>
-      <li>Custom widget template slot per datasource</li>
-      <li>Avatar/icon (developer-defined)</li>
-      <li>Primary label + secondary meta row</li>
-      <li>Checkbox shown in multi-select mode</li>
-      <li>Drag handle shown in drag-drop mode</li>
+      <li>Custom widget slot</li>
+      <li>Avatar + name + role</li>
+      <li>Checkbox in multi mode</li>
+      <li>Handle in drag mode</li>
     </ul>
   </div>
-  <div class="ann-card">
+  <div class="ann">
     <h3>Interaction Modes</h3>
     <ul>
-      <li><strong>Click:</strong> single click moves item</li>
-      <li><strong>Dbl-click:</strong> double-click moves item</li>
-      <li><strong>Multi-select:</strong> checkboxes + arrow btn</li>
-      <li><strong>Drag & drop:</strong> drag to opposite panel</li>
+      <li>Click: 1 click moves item</li>
+      <li>Dbl-click: 2 clicks move</li>
+      <li>Multi: checkboxes + btn</li>
+      <li>Drag: drop on panel</li>
     </ul>
   </div>
-  <div class="ann-card">
-    <h3>Actions & Persistence</h3>
-    <ul>
-      <li>onAdd / onRemove fire per item moved</li>
-      <li>onAddAll / onRemoveAll for bulk moves</li>
-      <li>Widget delegates state to nanoflows</li>
-      <li>Commit + refresh datasources in flow</li>
-    </ul>
-  </div>
-  <div class="ann-card">
-    <h3>Accessibility</h3>
-    <ul>
-      <li>ARIA roles on panels and items</li>
-      <li>Keyboard: Tab · Enter · Space</li>
-      <li>Focus ring: 2 px solid #264ae5</li>
-      <li>Screen-reader compatible labels</li>
-    </ul>
-  </div>
-  <div class="ann-card">
+  <div class="ann">
     <h3>Styling Tokens</h3>
     <ul>
-      <li>Interactive blue: #264ae5</li>
-      <li>Selection bg: #dce6fb</li>
+      <li>Blue: #264ae5</li>
+      <li>Selection: #dce6fb</li>
       <li>Border: #d7d7d7</li>
-      <li>Panel height: configurable CSS value</li>
-      <li>Atlas Design System compatible</li>
+      <li>Atlas compatible</li>
     </ul>
   </div>
 </div>
 
-<div class="footer">TransferList · conclusion low code company · Mendix Pluggable Widget · Web Only</div>
+<div class="footer">TransferList · conclusion low code company · Mendix Pluggable Widget</div>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════════════════════════ -->
 <script>
-  // ── Data ─────────────────────────────────────────────────────────
-  let leftItems = [
-    { id:1,  name:'Alice Johnson',   role:'Sr. Developer',    color:'#6366f1' },
-    { id:2,  name:'Bob Martens',     role:'UX Designer',      color:'#ec4899' },
-    { id:3,  name:'Cindy Hoekstra', role:'Product Owner',    color:'#f97316' },
-    { id:4,  name:'David de Vries', role:'Data Analyst',     color:'#22c55e' },
-    { id:5,  name:'Eva Smit',        role:'QA Engineer',      color:'#06b6d4' },
-    { id:6,  name:'Frank Visser',    role:'DevOps Engineer',  color:'#8b5cf6' },
-    { id:7,  name:'Grace Bakker',    role:'Business Analyst', color:'#ef4444' },
-  ];
-  let rightItems = [
-    { id:8,  name:'Henk Jansen',    role:'Architect',          color:'#eab308' },
-    { id:9,  name:'Iris van Dijk',  role:'Scrum Master',       color:'#14b8a6' },
-    { id:10, name:'Jan de Boer',    role:'Frontend Dev',       color:'#f59e0b' },
-  ];
-  const ORIG_RIGHT = JSON.parse(JSON.stringify(rightItems));
-
-  let mode = 'click';
-  let selLeft  = new Set();
-  let selRight = new Set();
-  let showSearch  = false;
-  let showMoveAll = false;
-  let emptyRight  = false;
-  let dragId = null, dragSide = null;
-
-  const modeInfo = {
-    click:       ['👆','<strong>Click mode:</strong> Single-click an item to move it to the opposite panel immediately.'],
-    dblclick:    ['🖱️','<strong>Double-click mode:</strong> Double-click to move. Single clicks have no effect.'],
-    multiselect: ['☑️','<strong>Multi-select mode:</strong> Tick checkboxes then press the ▶ button to move all selected items.'],
-    dragdrop:    ['✋','<strong>Drag & drop mode:</strong> Grab an item by its handle and drop it on the opposite panel.'],
+  const BANNERS = {
+    click:       '👆 <strong>Click mode:</strong> Single-click an item to move it to the opposite panel.',
+    dblclick:    '🖱 <strong>Double-click mode:</strong> Double-click to move. Single-click does nothing.',
+    multiselect: '☑️ <strong>Multi-select:</strong> Tick items then press › to move all selected.',
+    dragdrop:    '✋ <strong>Drag & drop:</strong> Drag an item by its handle onto the opposite panel.',
   };
 
+  let currentMode = 'click';
+  let dragId = null, dragSide = null;
+
+  // ── Mode switching ─────────────────────────────────────────────
   function setMode(m, btn) {
-    mode = m;
-    selLeft.clear(); selRight.clear();
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // Remove old mode class, clear selection
+    document.body.classList.remove('mode-' + currentMode);
+    currentMode = m;
+    document.body.classList.add('mode-' + m);
+
+    // Update tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('modeIcon').textContent = modeInfo[m][0];
-    document.getElementById('modeText').innerHTML   = modeInfo[m][1];
-    render();
+
+    // Banner
+    document.getElementById('banner').innerHTML = BANNERS[m];
+
+    // Bind item events based on mode
+    bindItems();
+
+    // Clear any selections
+    document.querySelectorAll('.tl-item.sel').forEach(el => el.classList.remove('sel'));
   }
 
-  function applyToggles() {
-    showSearch  = document.getElementById('tSearch').checked;
-    showMoveAll = document.getElementById('tMoveAll').checked;
-    emptyRight  = document.getElementById('tEmpty').checked;
+  // ── Item event binding ─────────────────────────────────────────
+  function bindItems() {
+    document.querySelectorAll('.tl-item').forEach(el => {
+      // Remove old listeners by cloning
+      const fresh = el.cloneNode(true);
+      el.parentNode.replaceChild(fresh, el);
+    });
 
-    document.getElementById('leftSearch').style.display  = showSearch ? '' : 'none';
-    document.getElementById('rightSearch').style.display = showSearch ? '' : 'none';
+    document.querySelectorAll('.tl-item').forEach(el => {
+      const id   = el.dataset.id;
+      const side = el.dataset.side;
 
-    if (emptyRight) {
-      rightItems = [];
-    } else if (rightItems.length === 0) {
-      rightItems = JSON.parse(JSON.stringify(ORIG_RIGHT));
-    }
-
-    render();
-  }
-
-  // ── Render ────────────────────────────────────────────────────────
-  function initials(n){ return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-
-  function itemHTML(item, side, filterIds) {
-    if (filterIds && !filterIds.includes(item.id)) return '';
-    const sel  = (side==='left' ? selLeft : selRight).has(item.id);
-    let cls = 'tl-item' + (sel ? ' selected' : '');
-    const cb     = mode==='multiselect' ? `<div class="tl-checkbox"></div>` : '';
-    const handle = mode==='dragdrop'    ? `<span class="tl-drag-handle">⠿</span>` : '';
-    const av     = `<div class="tl-avatar" style="background:${item.color}">${initials(item.name)}</div>`;
-    let evts = '';
-    if (mode==='click')       evts = `onclick="move(${item.id},'${side}')"`;
-    if (mode==='dblclick')    evts = `ondblclick="move(${item.id},'${side}')"`;
-    if (mode==='multiselect') evts = `onclick="toggleSel(${item.id},'${side}')"`;
-    if (mode==='dragdrop')    evts = `draggable="true" ondragstart="dStart(event,${item.id},'${side}')" ondragend="dEnd(event)"`;
-    return `<div class="${cls}" data-id="${item.id}" ${evts}>
-      ${handle}${cb}${av}
-      <div class="tl-item-text">
-        <div class="tl-item-name">${item.name}</div>
-        <div class="tl-item-meta">${item.role}</div>
-      </div>
-    </div>`;
-  }
-
-  function render(lf, rf) {
-    const lb = document.getElementById('leftBody');
-    const rb = document.getElementById('rightBody');
-
-    lb.innerHTML = leftItems.map(i=>itemHTML(i,'left',lf)).join('') ||
-      `<div class="tl-empty"><div class="tl-empty-icon">📋</div>No available items</div>`;
-    rb.innerHTML = rightItems.map(i=>itemHTML(i,'right',rf)).join('') ||
-      `<div class="tl-empty"><div class="tl-empty-icon">📥</div>Drop items here</div>`;
-
-    document.getElementById('leftCount').textContent  = leftItems.length;
-    document.getElementById('rightCount').textContent = rightItems.length;
-
-    renderControls();
-    bindDrop();
-  }
-
-  function renderControls() {
-    const c = document.getElementById('tlControls');
-    c.innerHTML = '';
-    if (mode === 'click' || mode === 'dblclick') return;
-
-    const addAll = showMoveAll ? `<button class="tl-btn" title="Move all →" onclick="moveAll('left')">&raquo;</button>` : '';
-    const remAll = showMoveAll ? `<button class="tl-btn" title="← Move all" onclick="moveAll('right')">&laquo;</button>` : '';
-    const div    = showMoveAll ? `<div class="tl-btn-divider"></div>` : '';
-
-    if (mode === 'multiselect') {
-      c.innerHTML = `${addAll}
-        <button class="tl-btn primary" title="Move selected →" onclick="moveSel('left')">&rsaquo;</button>
-        <button class="tl-btn" title="← Move selected" onclick="moveSel('right')">&lsaquo;</button>
-        ${div}${remAll}`;
-    }
-    if (mode === 'dragdrop' && showMoveAll) {
-      c.innerHTML = `${addAll}${div}${remAll}`;
-    }
-  }
-
-  // ── Actions ───────────────────────────────────────────────────────
-  function move(id, fromSide) {
-    if (fromSide === 'left') {
-      const i = leftItems.findIndex(x=>x.id===id); if(i<0) return;
-      rightItems.push(leftItems.splice(i,1)[0]);
-    } else {
-      const i = rightItems.findIndex(x=>x.id===id); if(i<0) return;
-      leftItems.push(rightItems.splice(i,1)[0]);
-    }
-    flash(fromSide==='left'?'rightPanel':'leftPanel');
-    render();
-  }
-
-  function toggleSel(id, side) {
-    const s = side==='left' ? selLeft : selRight;
-    if (side==='left') selRight.clear(); else selLeft.clear();
-    s.has(id) ? s.delete(id) : s.add(id);
-    render();
-  }
-
-  function moveSel(fromSide) {
-    if (fromSide==='left') {
-      rightItems.push(...leftItems.filter(i=>selLeft.has(i.id)));
-      leftItems = leftItems.filter(i=>!selLeft.has(i.id));
-      selLeft.clear(); flash('rightPanel');
-    } else {
-      leftItems.push(...rightItems.filter(i=>selRight.has(i.id)));
-      rightItems = rightItems.filter(i=>!selRight.has(i.id));
-      selRight.clear(); flash('leftPanel');
-    }
-    render();
-  }
-
-  function moveAll(fromSide) {
-    if (fromSide==='left') { rightItems.push(...leftItems); leftItems=[]; flash('rightPanel'); }
-    else { leftItems.push(...rightItems); rightItems=[]; flash('leftPanel'); }
-    selLeft.clear(); selRight.clear();
-    render();
-  }
-
-  function flash(id) {
-    const el = document.getElementById(id);
-    el.style.transition='none'; el.style.background='#e8f0fe';
-    setTimeout(()=>{ el.style.transition='background 0.5s'; el.style.background=''; },20);
-  }
-
-  // ── Drag & drop ───────────────────────────────────────────────────
-  function bindDrop() {
-    if (mode !== 'dragdrop') return;
-    ['leftPanel','rightPanel'].forEach(pid=>{
-      const p = document.getElementById(pid);
-      p.ondragover = e => { e.preventDefault(); p.classList.add('drag-over'); };
-      p.ondragleave = e => { if(!p.contains(e.relatedTarget)) p.classList.remove('drag-over'); };
-      p.ondrop = e => {
-        e.preventDefault(); p.classList.remove('drag-over');
-        if (!dragId) return;
-        const target = pid==='leftPanel'?'left':'right';
-        if (target === dragSide) return;
-        move(dragId, dragSide);
-      };
+      if (currentMode === 'click') {
+        el.addEventListener('click', () => moveItem(el));
+      } else if (currentMode === 'dblclick') {
+        el.addEventListener('dblclick', () => moveItem(el));
+      } else if (currentMode === 'multiselect') {
+        el.addEventListener('click', () => toggleSel(el, side));
+      } else if (currentMode === 'dragdrop') {
+        el.setAttribute('draggable', 'true');
+        el.addEventListener('dragstart', e => {
+          dragId = id; dragSide = side;
+          setTimeout(() => el.style.opacity = '0.4', 0);
+        });
+        el.addEventListener('dragend', () => {
+          el.style.opacity = '';
+          dragId = null; dragSide = null;
+          document.getElementById('leftPanel').classList.remove('drag-over');
+          document.getElementById('rightPanel').classList.remove('drag-over');
+        });
+      }
     });
   }
 
-  function dStart(e, id, side) { dragId=id; dragSide=side; e.currentTarget.style.opacity='0.4'; }
-  function dEnd(e) {
-    dragId=null; dragSide=null; e.currentTarget.style.opacity='';
-    document.getElementById('leftPanel').classList.remove('drag-over');
-    document.getElementById('rightPanel').classList.remove('drag-over');
+  // ── Move a single item ─────────────────────────────────────────
+  function moveItem(el) {
+    const fromSide = el.dataset.side;
+    const toId     = fromSide === 'left' ? 'rBody' : 'lBody';
+    const toPanel  = fromSide === 'left' ? 'rightPanel' : 'leftPanel';
+    const toSide   = fromSide === 'left' ? 'right' : 'left';
+
+    el.dataset.side = toSide;
+    el.classList.remove('sel');
+
+    // Insert before the empty-state div
+    const body  = document.getElementById(toId);
+    const empty = body.querySelector('.tl-empty');
+    body.insertBefore(el, empty);
+
+    rebindItem(el);
+    updateCounts();
+    flash(toPanel);
   }
 
-  // ── Search ────────────────────────────────────────────────────────
-  function filterItems(side, q) {
+  // ── Toggle selection (multiselect) ─────────────────────────────
+  function toggleSel(el, side) {
+    // Deselect items in the other panel
+    const other = side === 'left' ? 'right' : 'left';
+    document.querySelectorAll(`.tl-item[data-side="${other}"]`)
+            .forEach(i => i.classList.remove('sel'));
+    el.classList.toggle('sel');
+  }
+
+  // ── Move selected items ────────────────────────────────────────
+  function moveSelected(fromSide) {
+    const items = [...document.querySelectorAll(`.tl-item[data-side="${fromSide}"].sel`)];
+    items.forEach(el => moveItem(el));
+  }
+
+  // ── Move all items ─────────────────────────────────────────────
+  function moveAll(fromSide) {
+    const items = [...document.querySelectorAll(`.tl-item[data-side="${fromSide}"]`)];
+    items.forEach(el => moveItem(el));
+  }
+
+  // ── Drag-over / drop on panels ─────────────────────────────────
+  function panelDragOver(e, side) {
+    if (currentMode !== 'dragdrop') return;
+    e.preventDefault();
+    document.getElementById(side === 'left' ? 'leftPanel' : 'rightPanel').classList.add('drag-over');
+  }
+  function panelDragLeave(e, side) {
+    const panel = document.getElementById(side === 'left' ? 'leftPanel' : 'rightPanel');
+    if (!panel.contains(e.relatedTarget)) panel.classList.remove('drag-over');
+  }
+  function panelDrop(e, side) {
+    if (currentMode !== 'dragdrop') return;
+    e.preventDefault();
+    const panel = document.getElementById(side === 'left' ? 'leftPanel' : 'rightPanel');
+    panel.classList.remove('drag-over');
+    if (!dragId || dragSide === side) return;
+    const el = document.querySelector(`.tl-item[data-id="${dragId}"]`);
+    if (el) moveItem(el);
+  }
+
+  // ── Re-bind a moved item ───────────────────────────────────────
+  function rebindItem(el) {
+    const fresh = el.cloneNode(true);
+    el.parentNode.replaceChild(fresh, el);
+    const side = fresh.dataset.side;
+
+    if (currentMode === 'click') {
+      fresh.addEventListener('click', () => moveItem(fresh));
+    } else if (currentMode === 'dblclick') {
+      fresh.addEventListener('dblclick', () => moveItem(fresh));
+    } else if (currentMode === 'multiselect') {
+      fresh.addEventListener('click', () => toggleSel(fresh, side));
+    } else if (currentMode === 'dragdrop') {
+      fresh.setAttribute('draggable', 'true');
+      fresh.addEventListener('dragstart', e => {
+        dragId = fresh.dataset.id; dragSide = fresh.dataset.side;
+        setTimeout(() => fresh.style.opacity = '0.4', 0);
+      });
+      fresh.addEventListener('dragend', () => {
+        fresh.style.opacity = '';
+        dragId = null; dragSide = null;
+        document.getElementById('leftPanel').classList.remove('drag-over');
+        document.getElementById('rightPanel').classList.remove('drag-over');
+      });
+    }
+  }
+
+  // ── Toggle empty right panel ───────────────────────────────────
+  function toggleEmpty(on) {
+    const items = document.querySelectorAll('.tl-item[data-side="right"]');
+    items.forEach(el => el.style.display = on ? 'none' : '');
+    updateCounts();
+  }
+
+  // ── Update counts & empty states ──────────────────────────────
+  function updateCounts() {
+    ['left','right'].forEach(side => {
+      const bodyId  = side === 'left' ? 'lBody'  : 'rBody';
+      const countId = side === 'left' ? 'lCount' : 'rCount';
+      const emptyId = side === 'left' ? 'lEmpty' : 'rEmpty';
+      const items   = document.querySelectorAll(`#${bodyId} .tl-item:not([style*="display: none"])`);
+      document.getElementById(countId).textContent = items.length;
+      document.getElementById(emptyId).style.display = items.length === 0 ? 'block' : 'none';
+    });
+  }
+
+  // ── Flash a panel on receive ───────────────────────────────────
+  function flash(panelId) {
+    const el = document.getElementById(panelId);
+    el.style.transition = 'none';
+    el.style.background = '#e8f0fe';
+    setTimeout(() => { el.style.transition = 'background .5s'; el.style.background = ''; }, 20);
+  }
+
+  // ── Toggle body class ──────────────────────────────────────────
+  function toggleClass(cls, on) {
+    document.body.classList.toggle(cls, on);
+  }
+
+  // ── Search / filter ────────────────────────────────────────────
+  function filterPanel(side, q) {
     q = q.toLowerCase().trim();
-    if (!q) { render(); return; }
-    const ids = (side==='left'?leftItems:rightItems)
-      .filter(i=>i.name.toLowerCase().includes(q)||i.role.toLowerCase().includes(q))
-      .map(i=>i.id);
-    side==='left' ? render(ids, null) : render(null, ids);
+    document.querySelectorAll(`.tl-item[data-side="${side}"]`).forEach(el => {
+      const text = el.querySelector('.tl-name').textContent.toLowerCase()
+                 + el.querySelector('.tl-role').textContent.toLowerCase();
+      el.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+    updateCounts();
   }
 
-  // Boot
-  render();
+  // ── Boot ───────────────────────────────────────────────────────
+  bindItems();
+  updateCounts();
 </script>
 </body>
 </html>
