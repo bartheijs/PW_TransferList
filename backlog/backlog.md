@@ -45,12 +45,15 @@ Surface runtime errors to the end user (or developer) in a visible, accessible w
 
 ---
 
-### 🔲 Custom empty-list messages
-Allow developers to configure the text (or content) shown when a panel has no items.
+### 🔲 Custom empty-list slot (both panels)
+Allow developers to fully customise the content shown when a panel has no items, using a `type="widgets"` slot — so any Mendix widget (text, image, button, etc.) can be placed there.
 
-- Replace the hardcoded `EMPTY_PLACEHOLDER` constant in `src/constants.ts` with configurable `type="textTemplate"` properties (one per panel, both optional, with a sensible translation default).
-- Optionally support a `type="widgets"` slot per panel for richer empty-state content (illustration, button, etc.).
-- Both panels should be independently configurable.
+- New `type="widgets"` properties: `leftEmptyContent` and `rightEmptyContent`, one per panel, both optional.
+- When a slot is populated, it replaces the built-in hardcoded placeholder text entirely; when empty, the current `EMPTY_PLACEHOLDER` constant remains as the default fallback.
+- Both panels are independently configurable — left and right can have different empty-state content.
+- The slot content is only rendered when the panel has zero items (after any active search filter is applied); when items appear the slot is unmounted.
+- Studio Pro canvas preview should show a placeholder drop zone when the slot is empty, clearly labelled "Left empty content" / "Right empty content".
+- Remove (or keep as a text-only fallback) the `type="textTemplate"` approach — `type="widgets"` is strictly more powerful and covers the plain-text case via a Text widget.
 
 ---
 
@@ -222,6 +225,51 @@ A new interaction mode in which the user picks one item from the left panel and 
 - Selected items get `aria-selected="true"` on their `role="option"` element.
 - The Swap button is `aria-disabled="true"` until both panels have a selection; `aria-label="Swap selected items"` (or translatable equivalent).
 - Keyboard: `Space` selects/deselects the focused item; `Enter` on the Swap button triggers the swap.
+
+---
+
+### 🔲 Range selection with Shift-click (multiselect mode)
+Allow users to select a contiguous range of items with a single `Shift+click`, following the standard multi-select convention used in file explorers and data grids.
+
+- Only active when `interactionMode` is `multiselect`.
+- `Shift+click` on an item selects every item between the last-clicked item and the clicked item (inclusive), within the same panel. Items outside the range are not deselected.
+- `Ctrl+click` (or `Cmd+click` on macOS) toggles a single item without affecting the rest of the selection — this is already implicit in the checkbox model but should be made explicit and consistent.
+- A plain click (no modifier) selects only the clicked item and clears the rest, matching the conventional anchor-reset behaviour.
+- The anchor item (last plain-click target) is tracked per panel in component state; it resets when the user plain-clicks a new item or clears the selection.
+- Respects the active search filter: only visible items participate in the range.
+- Announced to screen readers: `aria-multiselectable="true"` on the list and `aria-selected` per item are already expected for multiselect — the shift-click mechanic itself does not add new ARIA requirements, but the selection-count badge (see **Selection count badge**) should update accordingly.
+- Pairs naturally with **Select-all checkbox**, **Clear selection button**, and **Persist selection across search filter changes**.
+
+---
+
+### 🔲 Stable controls-column width (no layout shift on spinner)
+The controls column (the middle column containing the move buttons) must not change width when the spinner replaces the buttons during a move operation.
+
+- The column currently resizes when the loading spinner appears because the spinner is narrower than the button set — this causes a visible layout shift (CLS) that is jarring and unprofessional.
+- Fix by giving the controls column a fixed width equal to the width of the icon buttons (the custom-icon-button size, not the default text-button width).
+- The simplest approach is a `min-width` / `width` CSS rule on `.transfer-list__controls` (or equivalent class) that matches the rendered width of the icon buttons, so the column never shrinks.
+- Verify that the fix works in all three interaction modes (`click`, `dblclick`, `dragdrop`) and with the custom controls slot (see **Custom controls column**) — in that case the column width should follow the slot content, not be hard-coded.
+- Also verify that the controls column does not grow unnecessarily wide in narrow containers.
+
+---
+
+### 🔲 Performance warnings and safeguards for bulk move operations
+Bulk operations (Move All, Move Selected with many items) fire one `onAdd`/`onRemove` action call per item, which can hammer the server with N simultaneous requests on large datasets. Developers and end-users should be informed and protected.
+
+**Studio Pro design-time warnings (developer-facing):**
+
+- When `onAdd` or `onRemove` is configured and the **Move All** buttons are not hidden (`showMoveAll` is `true`), emit a Studio Pro consistency warning: _"Move All fires one action per item. For large datasets this may cause performance issues. Consider using a batch action (see onAddBatch / onRemoveBatch) or hiding the Move All buttons."_
+- When `onAdd` or `onRemove` is configured and **Move Selected** is available (multiselect mode), emit a similar warning advising the same remedies.
+- Both warnings are suppressible by the developer (e.g. by explicitly acknowledging via a `type="boolean"` property `suppressBulkPerformanceWarning`, or by configuring the batch-action alternative).
+
+**Runtime safeguards (end-user-facing):**
+
+- New optional `type="integer"` property `maxBulkMoveItems` (default: unlimited / 0 = off).
+  - When set, **Move All** and **Move Selected** are blocked if the number of items to move exceeds the limit.
+  - A visible, accessible error message is shown (e.g. _"Cannot move more than 50 items at once."_), announced via `role="alert"`.
+  - The move buttons are not disabled upfront (the count may not be known statically), but the action is refused at click time with feedback.
+  - Optionally configurable as a soft warning instead of a hard block: a `type="enumeration"` `bulkMoveLimitBehavior` with values `block` (default) and `warn`.
+- Pairs naturally with **Batch action (onAddBatch / onRemoveBatch)** — that backlog item is the recommended long-term fix; this item adds the guardrails for the meantime.
 
 ---
 

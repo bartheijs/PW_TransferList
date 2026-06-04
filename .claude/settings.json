@@ -16,7 +16,9 @@
       "PowerShell(cd \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\"; npm run build 2>&1 | Select-String -Pattern \"created|error|\\\\[!]|TS\\\\d{4}\" | ForEach-Object { $_.Line })",
       "PowerShell(cd \"c:\\\\Mendix\\\\PW_TransferList-main\\\\PluggableWidgets\\\\PW_TransferList\"; npm run lint 2>&1 | Select-String \"warn|error|All matched\" | ForEach-Object { $_.Line })",
       "PowerShell(head -120)",
-      "PowerShell(git add -A)"
+      "PowerShell(git add -A)",
+      "Bash(git remote *)",
+      "Bash(git fetch *)"
     ]
   }
 }
