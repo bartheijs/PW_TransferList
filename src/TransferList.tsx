@@ -228,7 +228,13 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         for (const item of leftItems) {
             executeListItemAction(onAdd, item, "Add");
         }
-        setLeftSelection(new Set());
+        setLeftSelection(prev => {
+            const next = new Set(prev);
+            for (const item of leftItems) {
+                next.delete(item.id);
+            }
+            return next;
+        });
     }, [onAdd, leftItems]);
 
     /** Moves every currently visible right-panel item to the left by reusing the onRemove action. */
@@ -250,7 +256,13 @@ export function TransferList(props: TransferListContainerProps): ReactElement {
         for (const item of rightItems) {
             executeListItemAction(onRemove, item, "Remove");
         }
-        setRightSelection(new Set());
+        setRightSelection(prev => {
+            const next = new Set(prev);
+            for (const item of rightItems) {
+                next.delete(item.id);
+            }
+            return next;
+        });
     }, [onRemove, rightItems]);
 
     const handleLeftDragStart = useCallback((item: ObjectItem) => {

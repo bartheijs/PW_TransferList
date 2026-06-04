@@ -150,6 +150,7 @@ export const TransferPanel = memo(
                                     key={item.id}
                                     item={item}
                                     isSelected={isSelected(item)}
+                                    role="option"
                                     interactionMode={interactionMode}
                                     onActivate={onActivate}
                                     onToggleSelect={onToggleSelect}

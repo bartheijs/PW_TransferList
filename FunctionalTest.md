@@ -366,6 +366,20 @@ These tests verify the property panel tab structure in Studio Pro.
 - `»` and `«` buttons are not rendered.
 - `›` and `‹` buttons (multiselect mode only) are unaffected.
 
+### T-06.9 Move all preserves hidden selections
+
+**Precondition:** Set `Interaction mode` to **Multi select** and enable left search.
+
+**Steps:**
+1. Select 3 items in the left panel.
+2. Type a query that leaves 2 selected items visible and hides the third selected item.
+3. Click `»`.
+4. Clear the search query.
+
+**Expected:**
+- Only the 2 visible items move to the right panel.
+- The hidden item remains in the left panel and remains selected.
+
 ---
 
 ## T-07 Custom button icons
@@ -787,6 +801,7 @@ The warning threshold is **20 items** — it fires when the item count being mov
 | T-06.6 | Spinner during Move All (> 5 items) | | |
 | T-06.7 | No spinner for small moves (≤ 5 items) | | |
 | T-06.8 | Hide move all buttons | | |
+| T-06.9 | Move all preserves hidden selections | | |
 | T-07.1 | Custom Move All Right icon | | |
 | T-07.2 | Custom Move Selected Right icon | | |
 | T-07.3 | All four custom icons | | |

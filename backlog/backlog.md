@@ -146,6 +146,18 @@ Expose the active search query as an attribute so the datasource can filter serv
 
 ---
 
+### 🔲 Large-list rendering performance
+Investigate and improve rendering performance when a datasource contains hundreds or thousands of loaded items.
+
+- Profile realistic Mendix item templates and datasource sizes before choosing an implementation.
+- Consider list virtualization so only visible rows plus an overscan buffer are mounted.
+- Consider a memoized row wrapper that receives stable item-level props and calls `renderItem(item)` inside the memoized component; wrapping the current `TransferItem` alone may not help because `renderItem(item)` is evaluated before its props are compared.
+- Preserve variable-height content, keyboard navigation, ARIA listbox semantics, drag-and-drop, and browser find behavior when evaluating virtualization.
+- Document a recommended datasource size limit until measurements justify and guide an implementation.
+- Coordinate with **Server-side search** and datasource pagination so very large datasets do not need to be loaded into the browser unnecessarily.
+
+---
+
 ### 🔲 Pre-select items by expression (multiselect mode)
 Programmatically pre-check items in a panel when the widget first loads or when the datasource refreshes.
 

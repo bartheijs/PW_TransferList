@@ -7,6 +7,7 @@ export interface TransferItemProps {
     item: ObjectItem;
     children: ReactNode;
     isSelected: boolean;
+    role: "option";
     interactionMode: InteractionMode;
     onActivate: (item: ObjectItem) => void;
     onToggleSelect: (item: ObjectItem) => void;
@@ -30,6 +31,7 @@ export function TransferItem({
     item,
     children,
     isSelected,
+    role,
     interactionMode,
     onActivate,
     onToggleSelect,
@@ -91,9 +93,8 @@ export function TransferItem({
     return (
         <div
             className={className}
-            role="option"
-            // aria-selected only carries semantic weight when the listbox is multi-selectable.
-            aria-selected={isMultiselect ? isSelected : undefined}
+            role={role}
+            aria-selected={isSelected}
             tabIndex={0}
             draggable={isDragDrop}
             onClick={activateOrToggle}
